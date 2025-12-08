@@ -77,7 +77,7 @@ export default async function AdminPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="mt-8">
+        {/* <div className="mt-8">
           <h2 className="text-lg font-semibold text-gray-800 mb-4">Accions Ràpides</h2>
           <div className="flex flex-wrap gap-3">
             <Link
@@ -99,7 +99,7 @@ export default async function AdminPage() {
               + Afegir Servei
             </Link>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -181,7 +181,9 @@ export async function getAllMaterials(): Promise<Material[]> {
     const materials = await sql`
       SELECT id, name, description, category, brand, unit, price, stock_quantity, image_url, is_available, is_visible
       FROM materials
-      ORDER BY category, display_order ASC, name
+      ORDER BY category, 
+      -- display_order ASC,
+      name
     `;
     return materials as unknown as Material[];
   } catch (error) {

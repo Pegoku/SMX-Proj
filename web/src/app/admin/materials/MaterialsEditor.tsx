@@ -308,7 +308,7 @@ export default function MaterialsEditor({ initialMaterials }: MaterialsEditorPro
                     <div className="text-sm text-gray-500">{item.brand}</div>
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-600">{item.category}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{item.price.toFixed(2)} €/{item.unit}</td>
+                  <td className="px-4 py-3 text-sm text-gray-900">{Number(item.price).toFixed(2)} €/{item.unit}</td>
                   <td className="px-4 py-3 text-sm text-gray-600">{item.stock_quantity}</td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-1 text-xs rounded-full ${
