@@ -16,7 +16,7 @@ export default function Footer() {
                 alt="Miquel A. Riudavets" 
                 width={40} 
                 height={67}
-                className="h-12 w-auto brightness-0 invert"
+                className="h-12 w-auto"
               />
               <div>
                 <h3 className="text-base font-semibold">Miquel A. Riudavets Mercadal</h3>
@@ -27,7 +27,7 @@ export default function Footer() {
               Arreglos de Carpinteria, Pintado y Barnizado en General 
               (Paredes Interiores, Exteriores y Carpinteria)
             </p>
-            <p className="text-gray-500 text-xs">NIF: 41.497.721-V</p>
+            <p className="text-gray-500 text-xs">NIF: 41497721V</p>
           </div>
 
           {/* Quick Links */}
