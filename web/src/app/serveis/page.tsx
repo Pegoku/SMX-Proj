@@ -1,58 +1,76 @@
 import Link from "next/link";
+import { getServices } from "../actions";
+import type { Service } from "@/types";
 
 export const metadata = {
   title: "Serveis | Miquel A. Riudavets Mercadal",
   description: "Serveis de pintura i reformes a Menorca. Pintura interior i exterior, carpinteria, barnissat.",
 };
 
-const services = [
+// Fallback services if DB is empty
+const fallbackServices: Service[] = [
   {
     id: "pintura-interior",
-    title: "Pintura Interior",
-    desc: "Pintura de parets, sostres i espais interiors. Preparació de superfícies, empastats i acabats professionals.",
+    name: "Pintura Interior",
+    description: "Pintura de parets, sostres i espais interiors. Preparació de superfícies, empastats i acabats professionals.",
     features: [
       "Preparació de superfícies",
       "Pintura de parets i sostres",
       "Pintura de portes i fusteries",
       "Acabats especials",
     ],
+    slug: "pintura-interior",
+    is_active: true,
+    display_order: 1,
   },
   {
     id: "pintura-exterior",
-    title: "Pintura Exterior",
-    desc: "Pintura de façanes i exteriors amb productes resistents a les condicions climàtiques de Menorca.",
+    name: "Pintura Exterior",
+    description: "Pintura de façanes i exteriors amb productes resistents a les condicions climàtiques de Menorca.",
     features: [
       "Pintura de façanes",
       "Tractaments antihumitat",
       "Reparació de fissures",
       "Neteja de superfícies",
     ],
+    slug: "pintura-exterior",
+    is_active: true,
+    display_order: 2,
   },
   {
     id: "carpinteria",
-    title: "Carpinteria",
-    desc: "Arreglos de fusteria en general. Portes, finestres, mobles i altres elements de fusta.",
+    name: "Carpinteria",
+    description: "Arreglos de fusteria en general. Portes, finestres, mobles i altres elements de fusta.",
     features: [
       "Reparació de portes",
       "Arreglo de finestres",
       "Restauració de mobles",
       "Treballs a mida",
     ],
+    slug: "carpinteria",
+    is_active: true,
+    display_order: 3,
   },
   {
     id: "barnissat",
-    title: "Barnissat",
-    desc: "Vernissat de fusta i superfícies. Protecció i embelliment de elements de fusta.",
+    name: "Barnissat",
+    description: "Vernissat de fusta i superfícies. Protecció i embelliment de elements de fusta.",
     features: [
       "Vernís de portes",
       "Barnissat de mobles",
       "Tractament de bigues",
       "Acabats naturals",
     ],
+    slug: "barnissat",
+    is_active: true,
+    display_order: 4,
   },
 ];
 
-export default function ServeisPage() {
+export default async function ServeisPage() {
+  const dbServices = await getServices();
+  const services = dbServices.length > 0 ? dbServices : fallbackServices;
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -74,28 +92,30 @@ export default function ServeisPage() {
             {services.map((service) => (
               <div
                 key={service.id}
-                id={service.id}
+                id={service.slug || service.id}
                 className="border border-gray-200 rounded-lg p-6"
               >
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">{service.title}</h2>
-                <p className="text-gray-600 mb-4">{service.desc}</p>
-                <ul className="grid sm:grid-cols-2 gap-2 text-sm mb-4">
-                  {service.features.map((feature, i) => (
-                    <li key={i} className="flex items-center space-x-2 text-gray-600">
-                      <span className="text-[var(--secondary)]">•</span>
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">{service.name}</h2>
+                <p className="text-gray-600 mb-4">{service.description}</p>
+                {service.features && service.features.length > 0 && (
+                  <ul className="grid sm:grid-cols-2 gap-2 text-sm mb-4">
+                    {service.features.map((feature, i) => (
+                      <li key={i} className="flex items-center space-x-2 text-gray-600">
+                        <span className="text-[var(--secondary)]">•</span>
+                        <span>{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 <div className="flex gap-3">
                   <Link
-                    href={`/portfolio?filter=${encodeURIComponent(service.title)}`}
+                    href={`/portfolio?filter=${encodeURIComponent(service.name)}`}
                     className="btn-secondary text-sm py-2 px-4"
                   >
                     Veure treballs
                   </Link>
                   <Link
-                    href={`/?servei=${encodeURIComponent(service.title)}#contacte`}
+                    href={`/?servei=${encodeURIComponent(service.name)}#contacte`}
                     className="btn-primary text-sm py-2 px-4"
                   >
                     Sol·licitar pressupost

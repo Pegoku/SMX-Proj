@@ -33,7 +33,7 @@ export async function submitContactForm(
     // Create a new contact thread
     const threadResult = await sql`
       INSERT INTO contact_threads (name, email, phone, subject, status)
-      VALUES (${name}, ${email}, ${phone || null}, ${subject}, 'open')
+      VALUES (${name}, ${email}, ${phone || null}, ${subject}, 'new')
       RETURNING id
     `;
 
@@ -169,14 +169,115 @@ export async function getMaterialCategories(): Promise<MaterialCategory[]> {
 export async function getServices(): Promise<Service[]> {
   try {
     const services = await sql`
-      SELECT id, name, description, base_price
+      SELECT id, name, description, features, base_price, display_order, slug, icon, is_active
       FROM services
       WHERE is_active = true
-      ORDER BY name
+      ORDER BY display_order ASC, name
     `;
     return services as unknown as Service[];
   } catch (error) {
     console.error("Failed to fetch services:", error);
+    return [];
+  }
+}
+
+export async function replyToThread(
+  threadId: string,
+  message: string,
+  businessEmail: string
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    // Get thread info
+    const threads = await sql`
+      SELECT id, name, email, subject, status
+      FROM contact_threads
+      WHERE id = ${threadId}
+    `;
+
+    if (threads.length === 0) {
+      return { success: false, error: 'Thread not found' };
+    }
+
+    const thread = threads[0];
+
+    // Add message to thread
+    await sql`
+      INSERT INTO contact_messages_v2 (thread_id, sender_type, sender_email, message, email_sent)
+      VALUES (${threadId}, 'business', ${businessEmail}, ${message}, false)
+    `;
+
+    // Update thread status
+    await sql`
+      UPDATE contact_threads 
+      SET status = 'replied', updated_at = NOW()
+      WHERE id = ${threadId}
+    `;
+
+    // Send email through bot
+    const { sendReplyToCustomer } = await import('@/lib/email');
+    const emailResult = await sendReplyToCustomer({
+      customerEmail: thread.email,
+      customerName: thread.name,
+      replyMessage: message,
+      originalSubject: thread.subject,
+      threadId: threadId,
+    });
+
+    if (emailResult.success) {
+      // Mark message as sent
+      await sql`
+        UPDATE contact_messages_v2 
+        SET email_sent = true, email_sent_at = NOW()
+        WHERE thread_id = ${threadId} AND sender_type = 'business' AND email_sent = false
+      `;
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to reply to thread:", error);
+    return { success: false, error: 'Failed to send reply' };
+  }
+}
+
+export async function getThreads(status?: string): Promise<any[]> {
+  try {
+    if (status && status !== 'all') {
+      const threads = await sql`
+        SELECT t.*, 
+          (SELECT COUNT(*) FROM contact_messages_v2 WHERE thread_id = t.id) as message_count,
+          (SELECT message FROM contact_messages_v2 WHERE thread_id = t.id ORDER BY created_at ASC LIMIT 1) as first_message
+        FROM contact_threads t
+        WHERE t.status = ${status}
+        ORDER BY t.updated_at DESC
+      `;
+      return threads;
+    }
+
+    const threads = await sql`
+      SELECT t.*, 
+        (SELECT COUNT(*) FROM contact_messages_v2 WHERE thread_id = t.id) as message_count,
+        (SELECT message FROM contact_messages_v2 WHERE thread_id = t.id ORDER BY created_at ASC LIMIT 1) as first_message
+      FROM contact_threads t
+      ORDER BY t.updated_at DESC
+    `;
+    return threads;
+  } catch (error) {
+    console.error("Failed to fetch threads:", error);
+    return [];
+  }
+}
+
+export async function getThreadMessages(threadId: string): Promise<any[]> {
+  try {
+    const messages = await sql`
+      SELECT id, thread_id, sender_type, sender_email, message, email_sent, email_sent_at, created_at
+      FROM contact_messages_v2
+      WHERE thread_id = ${threadId}
+      ORDER BY created_at ASC
+    `;
+    return messages;
+  } catch (error) {
+    console.error("Failed to fetch thread messages:", error);
     return [];
   }
 }

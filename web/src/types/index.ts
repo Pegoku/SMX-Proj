@@ -26,6 +26,7 @@ export interface PortfolioItem {
   before_image_url?: string;
   after_image_url?: string;
   category?: string;
+  service_id?: string;
   display_order?: number;
 }
 
@@ -55,6 +56,23 @@ export interface Service {
   id: string;
   name: string;
   description?: string;
+  features?: string[];
   base_price?: number;
+  display_order?: number;
+  slug?: string;
+  icon?: string;
   is_active: boolean;
+}
+
+export interface EmailQueueItem {
+  id: string;
+  thread_id?: string;
+  to_email: string;
+  from_name: string;
+  subject: string;
+  body_text: string;
+  body_html?: string;
+  status: 'pending' | 'sent' | 'failed';
+  attempts: number;
+  created_at: Date;
 }

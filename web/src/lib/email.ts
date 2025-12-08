@@ -16,20 +16,34 @@ interface EmailOptions {
   text: string;
   html?: string;
   replyTo?: string;
+  inReplyTo?: string;
+  references?: string;
 }
 
 export async function sendEmail(options: EmailOptions) {
-  const { to, subject, text, html, replyTo } = options;
+  const { to, subject, text, html, replyTo, inReplyTo, references } = options;
 
   try {
-    const info = await transporter.sendMail({
+    const mailOptions: any = {
       from: `"${process.env.BUSINESS_NAME || 'Miquel A. Riudavets Mercadal'}" <${process.env.SMTP_USER}>`,
       to,
       subject,
       text,
       html: html || text,
-      replyTo: replyTo || process.env.BUSINESS_EMAIL,
-    });
+    };
+
+    // Set replyTo to bot email so replies come back to the bot
+    if (replyTo) {
+      mailOptions.replyTo = replyTo;
+    }
+
+    // For email threading
+    if (inReplyTo) {
+      mailOptions.inReplyTo = inReplyTo;
+      mailOptions.references = references || inReplyTo;
+    }
+
+    const info = await transporter.sendMail(mailOptions);
 
     console.log('Email sent:', info.messageId);
     return { success: true, messageId: info.messageId };
@@ -47,12 +61,17 @@ export async function sendContactNotification(contact: {
   threadId: string;
 }) {
   const businessEmail = process.env.BUSINESS_EMAIL;
+  const botEmail = process.env.SMTP_USER;
+  
   if (!businessEmail) {
     console.error('BUSINESS_EMAIL not configured');
     return { success: false, error: 'Business email not configured' };
   }
 
-  const subject = `Nova consulta de ${contact.name}`;
+  // Generate a unique message ID for threading
+  const messageId = `<thread-${contact.threadId}@${process.env.EMAIL_DOMAIN || 'miquelriudavets.com'}>`;
+
+  const subject = `[Consulta #${contact.threadId.slice(0, 8)}] Nova consulta de ${contact.name}`;
   const text = `
 Has rebut una nova consulta a través del formulari de contacte.
 
@@ -64,8 +83,10 @@ Missatge:
 ${contact.message}
 
 ---
+⚠️ IMPORTANT: Per respondre al client, NO responguis directament a aquest email.
+Accedeix al panell d'administració: ${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/admin/threads/${contact.threadId}
+
 ID de conversa: ${contact.threadId}
-Per respondre, contesta directament a aquest email o accedeix al panell d'administració.
   `.trim();
 
   const html = `
@@ -81,6 +102,9 @@ Per respondre, contesta directament a aquest email o accedeix al panell d'admini
     .label { font-weight: bold; color: #8B4513; }
     .message-box { background: white; padding: 15px; border-left: 4px solid #D2691E; margin-top: 10px; }
     .footer { background: #333; color: #999; padding: 15px; text-align: center; font-size: 12px; border-radius: 0 0 8px 8px; }
+    .warning { background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 4px; margin-top: 15px; }
+    .warning strong { color: #856404; }
+    .btn { display: inline-block; background: #D2691E; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin-top: 10px; }
   </style>
 </head>
 <body>
@@ -93,7 +117,7 @@ Per respondre, contesta directament a aquest email o accedeix al panell d'admini
         <span class="label">Nom:</span> ${contact.name}
       </div>
       <div class="field">
-        <span class="label">Email:</span> <a href="mailto:${contact.email}">${contact.email}</a>
+        <span class="label">Email:</span> ${contact.email}
       </div>
       <div class="field">
         <span class="label">Telèfon:</span> ${contact.phone || 'No proporcionat'}
@@ -101,6 +125,12 @@ Per respondre, contesta directament a aquest email o accedeix al panell d'admini
       <div class="field">
         <span class="label">Missatge:</span>
         <div class="message-box">${contact.message.replace(/\n/g, '<br>')}</div>
+      </div>
+      <div class="warning">
+        <strong>⚠️ IMPORTANT:</strong> Per respondre al client, accedeix al panell d'administració.<br>
+        Les respostes s'enviaran automàticament des del sistema.
+        <br><br>
+        <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/admin/threads/${contact.threadId}" class="btn">Respondre al Client</a>
       </div>
     </div>
     <div class="footer">
@@ -117,7 +147,7 @@ Per respondre, contesta directament a aquest email o accedeix al panell d'admini
     subject,
     text,
     html,
-    replyTo: contact.email,
+    // Don't set replyTo to customer - we want replies handled through admin panel
   });
 }
 
