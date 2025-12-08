@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react';
-import Image from 'next/image';
 
 interface PortfolioItem {
   id: string;
@@ -31,15 +30,15 @@ export default function PortfolioGallery({ items }: PortfolioGalleryProps) {
   return (
     <>
       {/* Filter Buttons */}
-      <div className="flex flex-wrap justify-center gap-2 mb-12">
+      <div className="flex flex-wrap gap-2 mb-8">
         {categories.map((category) => (
           <button
             key={category}
             onClick={() => setFilter(category as string)}
-            className={`px-4 py-2 rounded-full font-medium transition-all ${
+            className={`px-3 py-1 rounded text-sm transition-colors ${
               filter === category
                 ? 'bg-[var(--primary)] text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-100'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             {category === 'all' ? 'Tots' : category}
@@ -48,46 +47,24 @@ export default function PortfolioGallery({ items }: PortfolioGalleryProps) {
       </div>
 
       {/* Gallery Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredItems.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-xl overflow-hidden shadow-md card-hover cursor-pointer"
+            className="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => setSelectedItem(item)}
           >
-            <div className="relative h-64 bg-gray-200">
-              {item.image_url ? (
-                <Image
-                  src={item.image_url}
-                  alt={item.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)]">
-                  <svg className="w-16 h-16 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-              )}
+            <div className="h-48 bg-gray-100 flex items-center justify-center">
+              <span className="text-gray-400 text-sm">Imatge</span>
+            </div>
+            <div className="p-4">
+              <h3 className="font-semibold text-gray-800 mb-1">{item.title}</h3>
+              <p className="text-gray-600 text-sm">{item.description}</p>
               {item.category && (
-                <span className="absolute top-4 left-4 bg-[var(--primary)] text-white text-xs font-medium px-3 py-1 rounded-full">
+                <span className="inline-block mt-2 text-xs text-[var(--secondary)]">
                   {item.category}
                 </span>
               )}
-              {(item.before_image_url || item.after_image_url) && (
-                <span className="absolute top-4 right-4 bg-white text-[var(--primary)] text-xs font-medium px-3 py-1 rounded-full flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
-                  </svg>
-                  Abans/Després
-                </span>
-              )}
-            </div>
-            <div className="p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-2">{item.title}</h3>
-              <p className="text-gray-600 text-sm line-clamp-2">{item.description}</p>
             </div>
           </div>
         ))}
@@ -96,98 +73,70 @@ export default function PortfolioGallery({ items }: PortfolioGalleryProps) {
       {/* Empty State */}
       {filteredItems.length === 0 && (
         <div className="text-center py-12">
-          <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
           <p className="text-gray-500">No hi ha projectes en aquesta categoria.</p>
         </div>
       )}
 
-      {/* Lightbox Modal */}
+      {/* Modal */}
       {selectedItem && (
         <div
-          className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
           onClick={() => {
             setSelectedItem(null);
             setShowBefore(false);
           }}
         >
           <div
-            className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden"
+            className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative">
-              {/* Close Button */}
-              <button
-                onClick={() => {
-                  setSelectedItem(null);
-                  setShowBefore(false);
-                }}
-                className="absolute top-4 right-4 z-10 bg-black/50 text-white rounded-full p-2 hover:bg-black/70 transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-
-              {/* Image */}
-              <div className="relative h-96 md:h-[500px] bg-gray-200">
-                {selectedItem.before_image_url && selectedItem.after_image_url ? (
-                  <>
-                    <Image
-                      src={showBefore ? selectedItem.before_image_url : selectedItem.after_image_url}
-                      alt={`${selectedItem.title} - ${showBefore ? 'Abans' : 'Després'}`}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 1024px) 100vw, 900px"
-                    />
-                    {/* Before/After Toggle */}
-                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-full p-1 shadow-lg flex">
-                      <button
-                        onClick={() => setShowBefore(true)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                          showBefore ? 'bg-[var(--primary)] text-white' : 'text-gray-700'
-                        }`}
-                      >
-                        Abans
-                      </button>
-                      <button
-                        onClick={() => setShowBefore(false)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                          !showBefore ? 'bg-[var(--primary)] text-white' : 'text-gray-700'
-                        }`}
-                      >
-                        Després
-                      </button>
-                    </div>
-                  </>
-                ) : selectedItem.image_url ? (
-                  <Image
-                    src={selectedItem.image_url}
-                    alt={selectedItem.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 1024px) 100vw, 900px"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)]">
-                    <svg className="w-24 h-24 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Content */}
             <div className="p-6">
-              {selectedItem.category && (
-                <span className="inline-block bg-[var(--secondary-light)] text-[var(--primary)] text-xs font-medium px-3 py-1 rounded-full mb-3">
-                  {selectedItem.category}
+              <div className="flex justify-between items-start mb-4">
+                <h2 className="text-xl font-semibold text-gray-800">{selectedItem.title}</h2>
+                <button
+                  onClick={() => {
+                    setSelectedItem(null);
+                    setShowBefore(false);
+                  }}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="h-64 bg-gray-100 rounded mb-4 flex items-center justify-center">
+                <span className="text-gray-400">
+                  {showBefore ? 'Imatge Abans' : 'Imatge Després'}
                 </span>
+              </div>
+
+              {selectedItem.before_image_url && selectedItem.after_image_url && (
+                <div className="flex gap-2 mb-4">
+                  <button
+                    onClick={() => setShowBefore(true)}
+                    className={`px-3 py-1 rounded text-sm ${
+                      showBefore ? 'bg-[var(--primary)] text-white' : 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    Abans
+                  </button>
+                  <button
+                    onClick={() => setShowBefore(false)}
+                    className={`px-3 py-1 rounded text-sm ${
+                      !showBefore ? 'bg-[var(--primary)] text-white' : 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    Després
+                  </button>
+                </div>
               )}
-              <h2 className="text-2xl font-bold text-gray-800 mb-3">{selectedItem.title}</h2>
+
               <p className="text-gray-600">{selectedItem.description}</p>
+              {selectedItem.category && (
+                <p className="text-sm text-[var(--secondary)] mt-2">{selectedItem.category}</p>
+              )}
             </div>
           </div>
         </div>
