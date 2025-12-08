@@ -26,7 +26,7 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-[var(--primary)] text-white py-16 md:py-20">
+      <section className="bg-primary text-white py-16 md:py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">
@@ -39,7 +39,7 @@ export default function Home() {
             <div className="flex flex-wrap gap-3">
               <Link
                 href="#contacte"
-                className="bg-white text-[var(--primary)] font-medium py-3 px-6 rounded hover:bg-gray-100 transition-colors"
+                className="bg-white text-primary font-medium py-3 px-6 rounded hover:bg-gray-100 transition-colors"
               >
                 Sol·licita Pressupost
               </Link>
@@ -65,18 +65,18 @@ export default function Home() {
               <Link
                 key={index}
                 href={`/portfolio?filter=${encodeURIComponent(service.title)}`}
-                className="border border-gray-200 p-6 rounded-lg hover:border-[var(--primary)] hover:shadow-sm transition-all"
+                className="border border-gray-200 p-6 rounded-lg hover:border-primary hover:shadow-sm transition-all"
               >
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
                   {service.title}
                 </h3>
                 <p className="text-gray-600 text-sm">{service.desc}</p>
-                <span className="text-[var(--primary)] text-sm mt-3 inline-block">Veure treballs →</span>
+                <span className="text-primary text-sm mt-3 inline-block">Veure treballs →</span>
               </Link>
             ))}
           </div>
           <div className="mt-8">
-            <Link href="/serveis" className="text-[var(--primary)] hover:underline text-sm">
+            <Link href="/serveis" className="text-primary hover:underline text-sm">
               Veure tots els serveis →
             </Link>
           </div>
