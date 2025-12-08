@@ -75,7 +75,7 @@ export default function ThreadReplyForm({ threadId }: ThreadReplyFormProps) {
         </div>
       </form>
       <p className="text-sm text-gray-500 mt-4">
-        ℹ️ La resposta s&apos;enviarà al client automàticament des del compte del bot.
+        ⓘ La resposta s&apos;enviarà al client automàticament des del compte del bot.
       </p>
     </div>
   );

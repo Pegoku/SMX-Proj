@@ -8,7 +8,7 @@ export const metadata = {
   description: "Materials de pintura i construcció disponibles.",
 };
 
-// Sample materials data
+// Fallback materials data
 const sampleMaterials: Material[] = [
   // Pintures
   {

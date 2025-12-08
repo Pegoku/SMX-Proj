@@ -9,7 +9,7 @@ export const metadata = {
   description: "Treballs de pintura i reformes realitzats a Menorca.",
 };
 
-// Sample portfolio data
+// Fallback portfolio data
 const samplePortfolio: PortfolioItem[] = [
   {
     id: "1",
