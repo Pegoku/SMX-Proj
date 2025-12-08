@@ -47,8 +47,8 @@ export async function submitContactForm(
 
     // Also insert into service_requests for backwards compatibility
     await sql`
-      INSERT INTO service_requests (name, email, phone, message, status)
-      VALUES (${name}, ${email}, ${phone || null}, ${message}, 'pending')
+      INSERT INTO service_requests (name, email, phone, service_type, message, status)
+      VALUES (${name}, ${email}, ${phone || null}, ${subject}, ${message}, 'pending')
     `;
 
     // Send email notification to business

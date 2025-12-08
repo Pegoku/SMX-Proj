@@ -75,6 +75,7 @@ INSERT INTO material_categories (name, description, display_order) VALUES
     ('Imprimacions', 'Imprimacions i preparacions', 5)
 ON CONFLICT (name) DO NOTHING;
 
+
 CREATE TABLE IF NOT EXISTS service_requests (
     id              UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name            VARCHAR(150)        NOT NULL,
@@ -87,6 +88,9 @@ CREATE TABLE IF NOT EXISTS service_requests (
     created_at      TIMESTAMPTZ         NOT NULL DEFAULT NOW(),
     updated_at      TIMESTAMPTZ         NOT NULL DEFAULT NOW()
 );
+
+ALTER TABLE service_requests
+    ADD COLUMN IF NOT EXISTS message TEXT;
 
 -- Migrate data if needed (only if old columns exist)
 DO $$
