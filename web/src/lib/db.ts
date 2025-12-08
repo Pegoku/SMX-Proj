@@ -1,14 +1,10 @@
-import postgres from 'postgres';
+import { sql } from 'bun';
 
 if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL environment variable is not set");
 }
 
-const sql = postgres(process.env.DATABASE_URL, {
-  ssl: false, // Set to 'require' in production if using SSL
-  max: 10,
-  idle_timeout: 20,
-  connect_timeout: 10,
-});
+// Bun's built-in PostgreSQL client
+const db = sql(process.env.DATABASE_URL);
 
-export default sql;
+export default db;
