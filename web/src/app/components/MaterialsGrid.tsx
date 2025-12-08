@@ -33,7 +33,7 @@ export default function MaterialsGrid({ materials }: MaterialsGridProps) {
   });
 
   const formatPrice = (price: number, unit: string) => {
-    return `${price.toFixed(2)} €/${unit}`;
+    return `${Number(price).toFixed(2)} €/${unit}`;
   };
 
   return (

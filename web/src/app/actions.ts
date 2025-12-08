@@ -95,7 +95,8 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
         image_url, 
         before_image_url, 
         after_image_url,
-        display_order
+        display_order,
+        category
       FROM portfolio_items 
       WHERE visible = true 
       ORDER BY display_order ASC, created_at DESC
