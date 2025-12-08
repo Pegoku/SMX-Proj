@@ -20,7 +20,7 @@ const sampleMaterials: Material[] = [
     unit: "litre",
     price: 4.50,
     stock_quantity: 150,
-    image_url: "/materials/pintura-plastica.jpg",
+    image_url: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   {
@@ -32,7 +32,7 @@ const sampleMaterials: Material[] = [
     unit: "litre",
     price: 8.90,
     stock_quantity: 80,
-    image_url: "/materials/pintura-exterior.jpg",
+    image_url: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   {
@@ -44,7 +44,7 @@ const sampleMaterials: Material[] = [
     unit: "litre",
     price: 12.50,
     stock_quantity: 45,
-    image_url: "/materials/esmalte.jpg",
+    image_url: "https://images.unsplash.com/photo-1572048572872-2394404cf1f3?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   {
@@ -56,7 +56,7 @@ const sampleMaterials: Material[] = [
     unit: "litre",
     price: 15.90,
     stock_quantity: 30,
-    image_url: "/materials/antihumitat.jpg",
+    image_url: "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   {
@@ -68,7 +68,7 @@ const sampleMaterials: Material[] = [
     unit: "litre",
     price: 6.50,
     stock_quantity: 100,
-    image_url: "/materials/pintura-colors.jpg",
+    image_url: "https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   // Imprimacions
@@ -81,7 +81,7 @@ const sampleMaterials: Material[] = [
     unit: "litre",
     price: 9.90,
     stock_quantity: 35,
-    image_url: "/materials/imprimacio.jpg",
+    image_url: "https://images.unsplash.com/photo-1632920894665-62125099948e?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   {
@@ -93,7 +93,7 @@ const sampleMaterials: Material[] = [
     unit: "litre",
     price: 14.50,
     stock_quantity: 20,
-    image_url: "/materials/imprimacio-galv.jpg",
+    image_url: "https://images.unsplash.com/photo-1533090161767-e6ffed986c88?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   // Vernissos
@@ -106,7 +106,7 @@ const sampleMaterials: Material[] = [
     unit: "litre",
     price: 11.90,
     stock_quantity: 40,
-    image_url: "/materials/vernis.jpg",
+    image_url: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   {
@@ -118,7 +118,7 @@ const sampleMaterials: Material[] = [
     unit: "litre",
     price: 18.90,
     stock_quantity: 25,
-    image_url: "/materials/vernis-maritim.jpg",
+    image_url: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   // Materials
@@ -131,7 +131,7 @@ const sampleMaterials: Material[] = [
     unit: "kg",
     price: 3.20,
     stock_quantity: 200,
-    image_url: "/materials/massilla.jpg",
+    image_url: "https://images.unsplash.com/photo-1622146523461-68c141e05166?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   {
@@ -143,7 +143,7 @@ const sampleMaterials: Material[] = [
     unit: "unitat",
     price: 4.50,
     stock_quantity: 100,
-    image_url: "/materials/cinta.jpg",
+    image_url: "https://images.unsplash.com/photo-1616400619175-5beda3a17896?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   {
@@ -155,7 +155,7 @@ const sampleMaterials: Material[] = [
     unit: "pack",
     price: 5.90,
     stock_quantity: 60,
-    image_url: "/materials/paper-vidre.jpg",
+    image_url: "https://images.unsplash.com/photo-1517646287270-a5a9ca602e5c?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   // Eines
@@ -168,7 +168,7 @@ const sampleMaterials: Material[] = [
     unit: "unitat",
     price: 6.50,
     stock_quantity: 50,
-    image_url: "/materials/rodet.jpg",
+    image_url: "https://images.unsplash.com/photo-1589939705384-5185137a7f0f?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   {
@@ -180,7 +180,7 @@ const sampleMaterials: Material[] = [
     unit: "unitat",
     price: 8.90,
     stock_quantity: 30,
-    image_url: "/materials/brotxa.jpg",
+    image_url: "https://images.unsplash.com/photo-1599619351208-3e6c839d6828?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   {
@@ -192,7 +192,7 @@ const sampleMaterials: Material[] = [
     unit: "unitat",
     price: 2.50,
     stock_quantity: 80,
-    image_url: "/materials/safata.jpg",
+    image_url: "https://images.unsplash.com/photo-1595846519845-68e298c2edd8?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
   {
@@ -204,7 +204,7 @@ const sampleMaterials: Material[] = [
     unit: "unitat",
     price: 7.90,
     stock_quantity: 25,
-    image_url: "/materials/espatula.jpg",
+    image_url: "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=800&q=80",
     is_available: true,
   },
 ];
