@@ -96,15 +96,16 @@ ID de conversa: ${contact.threadId}
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: linear-gradient(135deg, #8B4513, #D2691E); color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-    .content { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
+    .header { background: #2c5282; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+    .content { background: #fafafa; padding: 20px; border: 1px solid #e2e8f0; }
     .field { margin-bottom: 15px; }
-    .label { font-weight: bold; color: #8B4513; }
-    .message-box { background: white; padding: 15px; border-left: 4px solid #D2691E; margin-top: 10px; }
-    .footer { background: #333; color: #999; padding: 15px; text-align: center; font-size: 12px; border-radius: 0 0 8px 8px; }
-    .warning { background: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 4px; margin-top: 15px; }
-    .warning strong { color: #856404; }
-    .btn { display: inline-block; background: #D2691E; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin-top: 10px; }
+    .label { font-weight: bold; color: #2c5282; }
+    .message-box { background: white; padding: 15px; border-left: 4px solid #c05621; margin-top: 10px; }
+    .footer { background: #1e3a5f; color: #a0aec0; padding: 15px; text-align: center; font-size: 12px; border-radius: 0 0 8px 8px; }
+    .warning { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 4px; margin-top: 15px; }
+    .warning strong { color: #92400e; }
+    .btn { display: inline-block; background: #c05621; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin-top: 10px; }
+    .btn:hover { background: #ed8936; }
   </style>
 </head>
 <body>
@@ -176,11 +177,11 @@ Pintura i Reformes
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: linear-gradient(135deg, #8B4513, #D2691E); color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-    .content { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
-    .message { background: white; padding: 20px; border-radius: 4px; }
-    .footer { background: #333; color: white; padding: 15px; text-align: center; border-radius: 0 0 8px 8px; }
-    .footer a { color: #D2691E; }
+    .header { background: #2c5282; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+    .content { background: #fafafa; padding: 20px; border: 1px solid #e2e8f0; }
+    .message { background: white; padding: 20px; border-radius: 4px; border-left: 4px solid #c05621; }
+    .footer { background: #1e3a5f; color: white; padding: 15px; text-align: center; border-radius: 0 0 8px 8px; }
+    .footer a { color: #ed8936; }
   </style>
 </head>
 <body>
@@ -235,9 +236,10 @@ Pintura i Reformes
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: linear-gradient(135deg, #8B4513, #D2691E); color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-    .content { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
-    .footer { background: #333; color: white; padding: 15px; text-align: center; border-radius: 0 0 8px 8px; }
+    .header { background: #2c5282; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+    .content { background: #fafafa; padding: 20px; border: 1px solid #e2e8f0; }
+    .footer { background: #1e3a5f; color: white; padding: 15px; text-align: center; border-radius: 0 0 8px 8px; }
+    .highlight { color: #2c5282; font-weight: bold; }
   </style>
 </head>
 <body>
@@ -250,7 +252,7 @@ Pintura i Reformes
       <p>Hola ${contact.name},</p>
       <p>Gràcies per posar-te en contacte amb nosaltres. Hem rebut la teva consulta i et respondrem el més aviat possible.</p>
       <p>Si tens alguna urgència, no dubtis en trucar-nos.</p>
-      <p>Salutacions cordials,<br><strong>Miquel A. Riudavets Mercadal</strong></p>
+      <p>Salutacions cordials,<br><span class="highlight">Miquel A. Riudavets Mercadal</span></p>
     </div>
     <div class="footer">
       <p>Miquel A. Riudavets Mercadal<br>
