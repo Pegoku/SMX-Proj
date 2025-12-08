@@ -12,11 +12,11 @@ export default function Footer() {
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
               <Image 
-                src="/logo-gray.png" 
+                src="/logo-color.png" 
                 alt="Miquel A. Riudavets" 
                 width={40} 
                 height={67}
-                className="h-12 w-auto opacity-90"
+                className="h-12 w-auto brightness-0 invert"
               />
               <div>
                 <h3 className="text-base font-semibold">Miquel A. Riudavets Mercadal</h3>

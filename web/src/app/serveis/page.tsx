@@ -79,7 +79,7 @@ export default function ServeisPage() {
               >
                 <h2 className="text-xl font-semibold text-gray-800 mb-2">{service.title}</h2>
                 <p className="text-gray-600 mb-4">{service.desc}</p>
-                <ul className="grid sm:grid-cols-2 gap-2 text-sm">
+                <ul className="grid sm:grid-cols-2 gap-2 text-sm mb-4">
                   {service.features.map((feature, i) => (
                     <li key={i} className="flex items-center space-x-2 text-gray-600">
                       <span className="text-[var(--secondary)]">•</span>
@@ -87,6 +87,20 @@ export default function ServeisPage() {
                     </li>
                   ))}
                 </ul>
+                <div className="flex gap-3">
+                  <Link
+                    href={`/portfolio?filter=${encodeURIComponent(service.title)}`}
+                    className="text-[var(--primary)] hover:underline text-sm"
+                  >
+                    Veure treballs →
+                  </Link>
+                  <Link
+                    href={`/?servei=${encodeURIComponent(service.title)}#contacte`}
+                    className="btn-primary text-sm py-2 px-4"
+                  >
+                    Sol·licitar pressupost
+                  </Link>
+                </div>
               </div>
             ))}
           </div>

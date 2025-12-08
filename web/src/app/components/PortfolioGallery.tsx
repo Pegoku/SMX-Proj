@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 interface PortfolioItem {
   id: string;
@@ -20,8 +21,22 @@ export default function PortfolioGallery({ items }: PortfolioGalleryProps) {
   const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
   const [showBefore, setShowBefore] = useState(false);
   const [filter, setFilter] = useState<string>('all');
+  const searchParams = useSearchParams();
 
   const categories = ['all', ...new Set(items.map(item => item.category).filter(Boolean))];
+
+  useEffect(() => {
+    const urlFilter = searchParams.get('filter');
+    if (urlFilter) {
+      // Find matching category (case insensitive)
+      const match = categories.find(cat => 
+        cat && cat.toLowerCase() === urlFilter.toLowerCase()
+      );
+      if (match) {
+        setFilter(match);
+      }
+    }
+  }, [searchParams, categories]);
   
   const filteredItems = filter === 'all' 
     ? items 

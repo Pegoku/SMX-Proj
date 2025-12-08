@@ -1,6 +1,7 @@
 'use client'
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { submitContactForm } from "../actions";
 
 const initialState = {
@@ -8,8 +9,33 @@ const initialState = {
   success: false,
 };
 
+const subjectOptions = [
+  { value: "", label: "Selecciona" },
+  { value: "Pintura Interior", label: "Pintura Interior" },
+  { value: "Pintura Exterior", label: "Pintura Exterior" },
+  { value: "Carpinteria", label: "Carpinteria" },
+  { value: "Barnissat", label: "Barnissat" },
+  { value: "Consulta materials", label: "Consulta materials" },
+  { value: "Altres", label: "Altres" },
+];
+
 export default function ContactForm() {
   const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
+  const searchParams = useSearchParams();
+  const [selectedSubject, setSelectedSubject] = useState("");
+
+  useEffect(() => {
+    const servei = searchParams.get("servei");
+    if (servei) {
+      // Find matching option
+      const match = subjectOptions.find(opt => 
+        opt.value.toLowerCase() === servei.toLowerCase()
+      );
+      if (match) {
+        setSelectedSubject(match.value);
+      }
+    }
+  }, [searchParams]);
 
   return (
     <form action={formAction} className="bg-white border border-gray-200 rounded-lg p-6">
@@ -68,13 +94,15 @@ export default function ContactForm() {
             id="subject"
             name="subject"
             required
+            value={selectedSubject}
+            onChange={(e) => setSelectedSubject(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded text-gray-900 bg-white focus:outline-none focus:border-[var(--primary)]"
           >
-            <option value="">Selecciona</option>
-            <option value="Pressupost pintura">Pressupost pintura</option>
-            <option value="Pressupost reforma">Pressupost reforma</option>
-            <option value="Consulta materials">Consulta materials</option>
-            <option value="Altres">Altres</option>
+            {subjectOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
           </select>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import ContactForm from "./components/ContactForm";
 import Link from "next/link";
 import Image from "next/image";
+import { Suspense } from "react";
 
 const services = [
   {
@@ -61,15 +62,17 @@ export default function Home() {
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {services.map((service, index) => (
-              <div
+              <Link
                 key={index}
-                className="border border-gray-200 p-6 rounded-lg"
+                href={`/portfolio?filter=${encodeURIComponent(service.title)}`}
+                className="border border-gray-200 p-6 rounded-lg hover:border-[var(--primary)] hover:shadow-sm transition-all"
               >
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
                   {service.title}
                 </h3>
                 <p className="text-gray-600 text-sm">{service.desc}</p>
-              </div>
+                <span className="text-[var(--primary)] text-sm mt-3 inline-block">Veure treballs →</span>
+              </Link>
             ))}
           </div>
           <div className="mt-8">
@@ -118,7 +121,9 @@ export default function Home() {
             <p className="text-gray-600 mb-6">
               Tens alguna pregunta o vols sol·licitar un pressupost? Envia'ns un missatge.
             </p>
-            <ContactForm />
+            <Suspense fallback={<div className="p-6 border border-gray-200 rounded-lg">Carregant...</div>}>
+              <ContactForm />
+            </Suspense>
           </div>
         </div>
       </section>
