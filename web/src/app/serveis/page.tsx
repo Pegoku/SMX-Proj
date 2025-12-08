@@ -90,9 +90,9 @@ export default function ServeisPage() {
                 <div className="flex gap-3">
                   <Link
                     href={`/portfolio?filter=${encodeURIComponent(service.title)}`}
-                    className="text-[var(--primary)] hover:underline text-sm"
+                    className="btn-secondary text-sm py-2 px-4"
                   >
-                    Veure treballs →
+                    Veure treballs
                   </Link>
                   <Link
                     href={`/?servei=${encodeURIComponent(service.title)}#contacte`}

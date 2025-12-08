@@ -29,14 +29,15 @@ export default function PortfolioGallery({ items }: PortfolioGalleryProps) {
     const urlFilter = searchParams.get('filter');
     if (urlFilter) {
       // Find matching category (case insensitive)
+      const decodedFilter = decodeURIComponent(urlFilter);
       const match = categories.find(cat => 
-        cat && cat.toLowerCase() === urlFilter.toLowerCase()
+        cat && cat.toLowerCase() === decodedFilter.toLowerCase()
       );
       if (match) {
         setFilter(match);
       }
     }
-  }, [searchParams, categories]);
+  }, [searchParams]);
   
   const filteredItems = filter === 'all' 
     ? items 
