@@ -27,7 +27,7 @@ export default function Footer() {
               Arreglos de Carpinteria, Pintado y Barnizado en General 
               (Paredes Interiores, Exteriores y Carpinteria)
             </p>
-            <p className="text-gray-500 text-xs">NIF: 41497721V</p>
+            <p className="text-gray-500 text-xs">NIF: 41 497 721 V</p>
           </div>
 
           {/* Quick Links */}
