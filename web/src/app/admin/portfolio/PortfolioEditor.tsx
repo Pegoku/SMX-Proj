@@ -11,12 +11,17 @@ interface PortfolioEditorProps {
 
 const categories = ['Pintura Interior', 'Pintura Exterior', 'Carpinteria', 'Barnissat'];
 
+type SortField = 'title' | 'category' | 'display_order';
+type SortDirection = 'asc' | 'desc';
+
 export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) {
   const [items, setItems] = useState(initialItems);
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [sortField, setSortField] = useState<SortField>('display_order');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -108,6 +113,42 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
       setLoading(false);
     }
   };
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const sortedItems = [...items].sort((a, b) => {
+    const aVal = a[sortField];
+    const bVal = b[sortField];
+    
+    if (aVal === null || aVal === undefined) return 1;
+    if (bVal === null || bVal === undefined) return -1;
+    
+    let comparison = 0;
+    if (typeof aVal === 'string' && typeof bVal === 'string') {
+      comparison = aVal.localeCompare(bVal);
+    } else if (typeof aVal === 'number' && typeof bVal === 'number') {
+      comparison = aVal - bVal;
+    }
+    
+    return sortDirection === 'asc' ? comparison : -comparison;
+  });
+
+  const SortIcon = ({ field }: { field: SortField }) => (
+    sortField === field ? (
+      <span className="ml-1 inline-block">
+        {sortDirection === 'asc' ? '↑' : '↓'}
+      </span>
+    ) : (
+      <span className="ml-1 inline-block text-gray-300">↕</span>
+    )
+  );
 
   return (
     <div className="space-y-6">
@@ -237,9 +278,24 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
           <thead className="bg-gray-50">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Imatge</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Títol</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Categoria</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ordre</th>
+              <th 
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
+                onClick={() => handleSort('title')}
+              >
+                Títol<SortIcon field="title" />
+              </th>
+              <th 
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
+                onClick={() => handleSort('category')}
+              >
+                Categoria<SortIcon field="category" />
+              </th>
+              <th 
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
+                onClick={() => handleSort('display_order')}
+              >
+                Ordre<SortIcon field="display_order" />
+              </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Accions</th>
             </tr>
           </thead>
@@ -251,7 +307,7 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
                 </td>
               </tr>
             ) : (
-              items.map((item) => (
+              sortedItems.map((item) => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">
                     <img

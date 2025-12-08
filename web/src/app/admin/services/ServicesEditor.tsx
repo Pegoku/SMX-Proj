@@ -9,12 +9,17 @@ interface ServicesEditorProps {
   initialServices: Service[];
 }
 
+type SortField = 'name' | 'display_order' | 'is_active';
+type SortDirection = 'asc' | 'desc';
+
 export default function ServicesEditor({ initialServices }: ServicesEditorProps) {
   const [services, setServices] = useState(initialServices);
   const [editingItem, setEditingItem] = useState<Service | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [sortField, setSortField] = useState<SortField>('display_order');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -134,6 +139,44 @@ export default function ServicesEditor({ initialServices }: ServicesEditorProps)
       setLoading(false);
     }
   };
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const sortedServices = [...services].sort((a, b) => {
+    const aVal = a[sortField];
+    const bVal = b[sortField];
+    
+    if (aVal === null || aVal === undefined) return 1;
+    if (bVal === null || bVal === undefined) return -1;
+    
+    let comparison = 0;
+    if (typeof aVal === 'string' && typeof bVal === 'string') {
+      comparison = aVal.localeCompare(bVal);
+    } else if (typeof aVal === 'number' && typeof bVal === 'number') {
+      comparison = aVal - bVal;
+    } else if (typeof aVal === 'boolean' && typeof bVal === 'boolean') {
+      comparison = aVal === bVal ? 0 : aVal ? -1 : 1;
+    }
+    
+    return sortDirection === 'asc' ? comparison : -comparison;
+  });
+
+  const SortIcon = ({ field }: { field: SortField }) => (
+    sortField === field ? (
+      <span className="ml-1 inline-block">
+        {sortDirection === 'asc' ? '↑' : '↓'}
+      </span>
+    ) : (
+      <span className="ml-1 inline-block text-gray-300">↕</span>
+    )
+  );
 
   return (
     <div className="space-y-6">
@@ -275,11 +318,26 @@ export default function ServicesEditor({ initialServices }: ServicesEditorProps)
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
+              <th 
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
+                onClick={() => handleSort('name')}
+              >
+                Nom<SortIcon field="name" />
+              </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Descripció</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Característiques</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ordre</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estat</th>
+              <th 
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
+                onClick={() => handleSort('display_order')}
+              >
+                Ordre<SortIcon field="display_order" />
+              </th>
+              <th 
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
+                onClick={() => handleSort('is_active')}
+              >
+                Estat<SortIcon field="is_active" />
+              </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Accions</th>
             </tr>
           </thead>
@@ -291,7 +349,7 @@ export default function ServicesEditor({ initialServices }: ServicesEditorProps)
                 </td>
               </tr>
             ) : (
-              services.map((item) => (
+              sortedServices.map((item) => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">
                     <div className="font-medium text-gray-900">{item.name}</div>

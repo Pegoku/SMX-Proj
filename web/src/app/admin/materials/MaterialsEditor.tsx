@@ -12,12 +12,17 @@ interface MaterialsEditorProps {
 const categories = ['Pintures', 'Imprimacions', 'Vernissos', 'Materials', 'Eines'];
 const units = ['litre', 'kg', 'unitat', 'pack', 'm²', 'm'];
 
+type SortField = 'name' | 'category' | 'price' | 'stock_quantity' | 'brand';
+type SortDirection = 'asc' | 'desc';
+
 export default function MaterialsEditor({ initialMaterials }: MaterialsEditorProps) {
   const [materials, setMaterials] = useState(initialMaterials);
   const [editingItem, setEditingItem] = useState<Material | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [sortField, setSortField] = useState<SortField>('name');
+  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -115,6 +120,42 @@ export default function MaterialsEditor({ initialMaterials }: MaterialsEditorPro
       setLoading(false);
     }
   };
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  const sortedMaterials = [...materials].sort((a, b) => {
+    const aVal = a[sortField];
+    const bVal = b[sortField];
+    
+    if (aVal === null || aVal === undefined) return 1;
+    if (bVal === null || bVal === undefined) return -1;
+    
+    let comparison = 0;
+    if (typeof aVal === 'string' && typeof bVal === 'string') {
+      comparison = aVal.localeCompare(bVal);
+    } else if (typeof aVal === 'number' && typeof bVal === 'number') {
+      comparison = aVal - bVal;
+    }
+    
+    return sortDirection === 'asc' ? comparison : -comparison;
+  });
+
+  const SortIcon = ({ field }: { field: SortField }) => (
+    sortField === field ? (
+      <span className="ml-1 inline-block">
+        {sortDirection === 'asc' ? '↑' : '↓'}
+      </span>
+    ) : (
+      <span className="ml-1 inline-block text-gray-300">↕</span>
+    )
+  );
 
   return (
     <div className="space-y-6">
@@ -272,10 +313,30 @@ export default function MaterialsEditor({ initialMaterials }: MaterialsEditorPro
           <thead className="bg-gray-50">
             <tr>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Imatge</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Categoria</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Preu</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock</th>
+              <th 
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
+                onClick={() => handleSort('name')}
+              >
+                Nom<SortIcon field="name" />
+              </th>
+              <th 
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
+                onClick={() => handleSort('category')}
+              >
+                Categoria<SortIcon field="category" />
+              </th>
+              <th 
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
+                onClick={() => handleSort('price')}
+              >
+                Preu<SortIcon field="price" />
+              </th>
+              <th 
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
+                onClick={() => handleSort('stock_quantity')}
+              >
+                Stock<SortIcon field="stock_quantity" />
+              </th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estat</th>
               <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Accions</th>
             </tr>
@@ -288,7 +349,7 @@ export default function MaterialsEditor({ initialMaterials }: MaterialsEditorPro
                 </td>
               </tr>
             ) : (
-              materials.map((item) => (
+              sortedMaterials.map((item) => (
                 <tr key={item.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3">
                     {item.image_url ? (
