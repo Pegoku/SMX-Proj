@@ -41,7 +41,7 @@ export default function ContactForm() {
             name="name"
             required
             placeholder="El teu nom"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all text-gray-900 placeholder-gray-500"
           />
         </div>
 
@@ -55,7 +55,7 @@ export default function ContactForm() {
             name="email"
             required
             placeholder="el-teu@email.com"
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all text-gray-900 placeholder-gray-500"
           />
         </div>
       </div>
@@ -69,7 +69,7 @@ export default function ContactForm() {
           id="phone"
           name="phone"
           placeholder="+34 600 000 000"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all text-gray-900 placeholder-gray-500"
         />
       </div>
 
@@ -81,7 +81,7 @@ export default function ContactForm() {
           id="subject"
           name="subject"
           required
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all bg-white"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all bg-white text-gray-900"
         >
           <option value="">Selecciona un assumpte</option>
           <option value="Pressupost pintura interior">Pressupost pintura interior</option>
@@ -102,7 +102,7 @@ export default function ContactForm() {
           required
           rows={5}
           placeholder="Descriu el teu projecte o consulta..."
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all resize-none"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:border-transparent transition-all resize-none text-gray-900 placeholder-gray-500"
         ></textarea>
       </div>
 
