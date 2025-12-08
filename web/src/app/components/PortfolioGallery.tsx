@@ -69,8 +69,12 @@ export default function PortfolioGallery({ items }: PortfolioGalleryProps) {
             className="border border-gray-200 rounded-lg overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => setSelectedItem(item)}
           >
-            <div className="h-48 bg-gray-100 flex items-center justify-center">
-              <span className="text-gray-400 text-sm">Imatge</span>
+            <div className="h-48 bg-gray-100 relative">
+              <img
+                src={item.image_url}
+                alt={item.title}
+                className="w-full h-full object-cover"
+              />
             </div>
             <div className="p-4">
               <h3 className="font-semibold text-gray-800 mb-1">{item.title}</h3>
@@ -121,10 +125,12 @@ export default function PortfolioGallery({ items }: PortfolioGalleryProps) {
                 </button>
               </div>
               
-              <div className="h-64 bg-gray-100 rounded mb-4 flex items-center justify-center">
-                <span className="text-gray-400">
-                  {showBefore ? 'Imatge Abans' : 'Imatge Després'}
-                </span>
+              <div className="h-64 bg-gray-100 rounded mb-4 overflow-hidden">
+                <img
+                  src={showBefore ? selectedItem.before_image_url : (selectedItem.after_image_url || selectedItem.image_url)}
+                  alt={showBefore ? `${selectedItem.title} - Abans` : `${selectedItem.title} - Després`}
+                  className="w-full h-full object-cover"
+                />
               </div>
 
               {selectedItem.before_image_url && selectedItem.after_image_url && (
