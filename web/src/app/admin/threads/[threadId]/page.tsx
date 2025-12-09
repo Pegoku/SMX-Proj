@@ -1,3 +1,7 @@
+// Force dynamic rendering so individual thread pages don't get stuck from build output
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import { getThreads, getThreadMessages } from '@/app/actions';
 import { notFound } from 'next/navigation';
 import ThreadReplyForm from './ThreadReplyForm';
