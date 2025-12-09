@@ -1,3 +1,7 @@
+// Force dynamic rendering so admin thread list isn't prerendered at build time
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 import Link from 'next/link';
 import { getThreads } from '@/app/actions';
 import { getAllPortfolioItems, getAllMaterials, getAllServices } from './actions';
