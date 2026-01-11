@@ -1,4 +1,4 @@
-// Force dynamic rendering so admin thread list isn't prerendered at build time
+// Force dynamic rendering so admin services page isn't prerendered at build time
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
