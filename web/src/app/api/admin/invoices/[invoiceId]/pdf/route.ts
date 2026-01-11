@@ -1,6 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { jsPDF } from 'jspdf';
 import sql from '@/lib/db';
+import fs from 'fs';
+import path from 'path';
+
+// Load logo from public folder
+const getLogoBase64 = (): string => {
+  try {
+    const logoPath = path.join(process.cwd(), 'public', 'logo-color.png');
+    const logoBuffer = fs.readFileSync(logoPath);
+    return `data:image/png;base64,${logoBuffer.toString('base64')}`;
+  } catch (error) {
+    console.error('Failed to load logo:', error);
+    return '';
+  }
+};
 
 interface InvoiceItem {
   description: string;
@@ -68,6 +82,7 @@ export async function GET(
     const headerGreen = '#2d5016';
     const lightGray = '#f5f5f5';
     const darkGray = '#4a4a4a';
+    
 
     // Helper functions
     const drawLine = (y1: number, y2?: number) => {
@@ -77,6 +92,12 @@ export async function GET(
     };
 
     // ========== HEADER ==========
+    // Main logo
+    const logoBase64 = getLogoBase64();
+    if (logoBase64) {
+      doc.addImage(logoBase64, 'PNG', margin, y, 30, 30);
+    }
+
     // Business name (large, green)
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(24);
