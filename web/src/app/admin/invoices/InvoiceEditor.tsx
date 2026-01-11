@@ -448,15 +448,15 @@ export default function InvoiceEditor({
                   <p className="text-sm text-gray-600 mb-2">Afegir producte guardat:</p>
                   <div className="flex flex-wrap gap-2">
                     {products.map(product => (
-                      <button
-                        key={product.id}
-                        type="button"
-                        onClick={() => addProductAsItem(product)}
-                        className="px-2 py-1 text-xs bg-white border rounded hover:bg-gray-100"
-                      >
-                        {product.name} ({product.default_price.toFixed(2)}€/{product.default_unit})
-                      </button>
-                    ))}
+                        <button
+                          key={product.id}
+                          type="button"
+                          onClick={() => addProductAsItem(product)}
+                          className="px-2 py-1 text-xs bg-white border rounded hover:bg-gray-100"
+                        >
+                          {product.name} ({Number(product.default_price).toFixed(2)}€/{product.default_unit})
+                        </button>
+                      ))}
                   </div>
                 </div>
               )}
@@ -473,7 +473,7 @@ export default function InvoiceEditor({
                         Unitat
                       </th>
                       <th className="px-3 py-2 text-center text-sm font-medium text-gray-700 w-20">
-                        Qttat
+                        Qtty
                       </th>
                       <th className="px-3 py-2 text-right text-sm font-medium text-gray-700 w-24">
                         Preu
