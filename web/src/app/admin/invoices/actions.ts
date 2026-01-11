@@ -454,3 +454,25 @@ export async function updateInvoiceStatus(
     return { success: false, error: 'Error actualitzant l\'estat' };
   }
 }
+
+export async function sendInvoiceEmail(invoiceId: string): Promise<{ success: boolean; error?: string }> {
+  try {
+    // Dynamic import to avoid client-side bundling issues
+    const { sendInvoice } = await import('@/lib/email');
+    const result = await sendInvoice(invoiceId);
+    
+    if (result.success) {
+      // Update invoice status to 'sent'
+      await sql`
+        UPDATE invoices SET status = 'sent', updated_at = NOW()
+        WHERE id = ${invoiceId}
+      `;
+      revalidatePath('/admin/invoices');
+    }
+    
+    return result;
+  } catch (error) {
+    console.error('Failed to send invoice email:', error);
+    return { success: false, error: 'Error enviant la factura per email' };
+  }
+}

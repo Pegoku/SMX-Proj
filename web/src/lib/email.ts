@@ -1,3 +1,4 @@
+import { getInvoiceById } from '@/app/admin/invoices/actions';
 import nodemailer from 'nodemailer';
 
 const transporter = nodemailer.createTransport({
@@ -18,11 +19,15 @@ interface EmailOptions {
   replyTo?: string;
   inReplyTo?: string;
   references?: string;
+  attachments?: Array<{
+    filename: string;
+    content: Buffer | string;
+    contentType?: string;
+  }>;
 }
 
 export async function sendEmail(options: EmailOptions) {
-  const { to, subject, text, html, replyTo, inReplyTo, references } = options;
-
+  const { to, subject, text, html, replyTo, inReplyTo, references, attachments } = options;
   try {
     const mailOptions: any = {
       from: `"${process.env.BUSINESS_NAME || 'Miquel A. Riudavets Mercadal'}" <${process.env.SMTP_USER}>`,
@@ -30,6 +35,7 @@ export async function sendEmail(options: EmailOptions) {
       subject,
       text,
       html: html || text,
+      attachments,
     };
 
     // Set replyTo to bot email so replies come back to the bot
@@ -51,6 +57,38 @@ export async function sendEmail(options: EmailOptions) {
     console.error('Error sending email:', error);
     return { success: false, error };
   }
+}
+
+export async function sendInvoice(invoiceId: string){
+  // Get invoice PDF
+  const invoicePdfUrl = `http://localhost:3000/api/admin/invoices/${invoiceId}/pdf`;
+
+  // Fetch invoice PDF
+  const response = await fetch(invoicePdfUrl);
+  const pdfBuffer = await response.arrayBuffer();
+
+  // Get invoice details to find client email
+  const invoice = await getInvoiceById(invoiceId);
+  if (!invoice || !invoice.client || !invoice.client.email) {
+    return { success: false, error: 'Client email not found' };
+  }
+  
+  const subject = `Factura #${invoice.number} de Miquel A. Riudavets Mercadal`;
+  const text = 'Hello world';
+  
+  return sendEmail({
+    to: invoice.client.email,
+    subject,
+    text,
+    attachments: [
+      {
+        filename: `Factura-${invoice.number}.pdf`,
+        content: Buffer.from(pdfBuffer),
+        contentType: 'application/pdf',
+      },
+    ],
+  });
+
 }
 
 export async function sendContactNotification(contact: {

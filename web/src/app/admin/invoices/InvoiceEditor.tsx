@@ -14,6 +14,7 @@ import {
   getInvoiceItemsById,
   getAllInvoices,
   updateClient,
+  sendInvoiceEmail,
 } from './actions';
 
 interface InvoiceEditorProps {
@@ -54,6 +55,7 @@ export default function InvoiceEditor({
   const [showClientModal, setShowClientModal] = useState('');
   const [showProductModal, setShowProductModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [sendingInvoiceId, setSendingInvoiceId] = useState<string | null>(null);
   const router = useRouter();
 
   const [formData, setFormData] = useState({
@@ -766,6 +768,27 @@ export default function InvoiceEditor({
                           className="px-2 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded"
                         >
                           Editar
+                        </button>
+                        <button
+                          onClick={async () => {
+                            setSendingInvoiceId(invoice.id);
+                            try {
+                              const result = await sendInvoiceEmail(invoice.id);
+                              if (result.success) {
+                                setInvoices(await getAllInvoices());
+                              } else {
+                                setError(result.error || 'Error enviant email');
+                              }
+                            } catch {
+                              setError('Error enviant email');
+                            } finally {
+                              setSendingInvoiceId(null);
+                            }
+                          }}
+                          disabled={sendingInvoiceId === invoice.id}
+                          className="px-2 py-1 text-sm text-indigo-600 hover:bg-indigo-50 rounded disabled:opacity-50"
+                        >
+                          {sendingInvoiceId === invoice.id ? 'Enviant...' : 'Enviar'}
                         </button>
                         <a
                           href={`/api/admin/invoices/${invoice.id}/pdf`}
