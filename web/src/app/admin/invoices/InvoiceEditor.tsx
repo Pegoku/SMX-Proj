@@ -345,12 +345,8 @@ export default function InvoiceEditor({
     }
   };
 
-  const getClientData = (showClientModal: string, data: string) => {
-    if (showClientModal === 'new') {
-        return (newClientForm as any)[data];
-    } else {
-        return (clients.find(c => c.id === showClientModal) as any)[data] || '';
-    }
+  const getClientData = (field: keyof typeof newClientForm): string => {
+    return newClientForm[field] || '';
   };
 
   const filteredInvoices = invoices.filter(
@@ -414,7 +410,34 @@ export default function InvoiceEditor({
                   </select>
                   <button
                     type="button"
-                    onClick={() => setShowClientModal(formData.client_id ? formData.client_id : 'new')}
+                    onClick={() => {
+                      if (formData.client_id) {
+                        const client = clients.find(c => c.id === formData.client_id);
+                        if (client) {
+                          setNewClientForm({
+                            name: client.name || '',
+                            nif: client.nif || '',
+                            email: client.email || '',
+                            phone: client.phone || '',
+                            address_line1: client.address_line1 || '',
+                            city: client.city || '',
+                            postal_code: client.postal_code || '',
+                          });
+                        }
+                        setShowClientModal(formData.client_id);
+                      } else {
+                        setNewClientForm({
+                          name: '',
+                          nif: '',
+                          email: '',
+                          phone: '',
+                          address_line1: '',
+                          city: '',
+                          postal_code: '',
+                        });
+                        setShowClientModal('new');
+                      }
+                    }}
                     className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                   >
                     {formData.client_id ? 'Editar' : '+ Nou'}
@@ -787,7 +810,7 @@ export default function InvoiceEditor({
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
                 <input
                   type="text"
-                  value={getClientData(showClientModal, 'name')}
+                  value={getClientData('name')}
                   onChange={e => setNewClientForm({ ...newClientForm, name: e.target.value })}
                   className="w-full p-2 border rounded-lg"
                   required
@@ -798,7 +821,7 @@ export default function InvoiceEditor({
                   <label className="block text-sm font-medium text-gray-700 mb-1">N.I.F.</label>
                   <input
                     type="text"
-                    value={getClientData(showClientModal, 'nif')}
+                    value={getClientData('nif')}
                     onChange={e => setNewClientForm({ ...newClientForm, nif: e.target.value })}
                     className="w-full p-2 border rounded-lg"
                   />
@@ -807,7 +830,7 @@ export default function InvoiceEditor({
                   <label className="block text-sm font-medium text-gray-700 mb-1">Telèfon</label>
                   <input
                     type="text"
-                    value={getClientData(showClientModal, 'phone')}
+                    value={getClientData('phone')}
                     onChange={e => setNewClientForm({ ...newClientForm, phone: e.target.value })}
                     className="w-full p-2 border rounded-lg"
                   />
@@ -817,7 +840,7 @@ export default function InvoiceEditor({
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                 <input
                   type="email"
-                  value={getClientData(showClientModal, 'email')}
+                  value={getClientData('email')}
                   onChange={e => setNewClientForm({ ...newClientForm, email: e.target.value })}
                   className="w-full p-2 border rounded-lg"
                 />
@@ -826,7 +849,7 @@ export default function InvoiceEditor({
                 <label className="block text-sm font-medium text-gray-700 mb-1">Domicili</label>
                 <input
                   type="text"
-                  value={getClientData(showClientModal, 'address_line1')}
+                  value={getClientData('address_line1')}
                   onChange={e =>
                     setNewClientForm({ ...newClientForm, address_line1: e.target.value })
                   }
@@ -838,7 +861,7 @@ export default function InvoiceEditor({
                   <label className="block text-sm font-medium text-gray-700 mb-1">Codi Postal</label>
                   <input
                     type="text"
-                    value={getClientData(showClientModal, 'postal_code')}
+                    value={getClientData('postal_code')}
                     onChange={e =>
                       setNewClientForm({ ...newClientForm, postal_code: e.target.value })
                     }
@@ -849,7 +872,7 @@ export default function InvoiceEditor({
                   <label className="block text-sm font-medium text-gray-700 mb-1">Població</label>
                   <input
                     type="text"
-                    value={getClientData(showClientModal, 'city')}
+                    value={getClientData('city')}
                     onChange={e => setNewClientForm({ ...newClientForm, city: e.target.value })}
                     className="w-full p-2 border rounded-lg"
                   />
