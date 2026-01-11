@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import type { Invoice, Client, InvoiceProduct } from '@/types';
+import { useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import type { Invoice, Client, InvoiceProduct } from "@/types";
 import {
   createInvoice,
   updateInvoice,
@@ -15,7 +15,8 @@ import {
   getAllInvoices,
   updateClient,
   sendInvoiceEmail,
-} from './actions';
+  deleteClient,
+} from "./actions";
 
 interface InvoiceEditorProps {
   initialInvoices: Invoice[];
@@ -30,14 +31,14 @@ interface InvoiceItemForm {
   unit_price: number;
 }
 
-const units = ['unitat', 'hora', 'm²', 'm', 'kg', 'litre', 'pack'];
+const units = ["unitat", "hora", "m²", "m", "kg", "litre", "pack"];
 
 const statusLabels: Record<string, { label: string; color: string }> = {
-  draft: { label: 'Esborrany', color: 'bg-gray-100 text-gray-800' },
-  sent: { label: 'Enviada', color: 'bg-blue-100 text-blue-800' },
-  paid: { label: 'Pagada', color: 'bg-green-100 text-green-800' },
-  overdue: { label: 'Vençuda', color: 'bg-red-100 text-red-800' },
-  cancelled: { label: 'Cancel·lada', color: 'bg-gray-100 text-gray-500' },
+  draft: { label: "Esborrany", color: "bg-gray-100 text-gray-800" },
+  sent: { label: "Enviada", color: "bg-blue-100 text-blue-800" },
+  paid: { label: "Pagada", color: "bg-green-100 text-green-800" },
+  overdue: { label: "Vençuda", color: "bg-red-100 text-red-800" },
+  cancelled: { label: "Cancel·lada", color: "bg-gray-100 text-gray-500" },
 };
 
 export default function InvoiceEditor({
@@ -51,56 +52,56 @@ export default function InvoiceEditor({
   const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [showClientModal, setShowClientModal] = useState('');
+  const [error, setError] = useState("");
+  const [showClientModal, setShowClientModal] = useState("");
   const [showProductModal, setShowProductModal] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [sendingInvoiceId, setSendingInvoiceId] = useState<string | null>(null);
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    client_id: '',
-    issue_date: new Date().toISOString().split('T')[0],
-    due_date: '',
-    status: 'draft',
-    notes: '',
+    client_id: "",
+    issue_date: new Date().toISOString().split("T")[0],
+    due_date: "",
+    status: "draft",
+    notes: "",
     tax_rate: 21,
     labor_total: 0,
     items: [] as InvoiceItemForm[],
   });
 
   const [newClientForm, setNewClientForm] = useState({
-    name: '',
-    nif: '',
-    email: '',
-    phone: '',
-    address_line1: '',
-    city: '',
-    postal_code: '',
+    name: "",
+    nif: "",
+    email: "",
+    phone: "",
+    address_line1: "",
+    city: "",
+    postal_code: "",
   });
 
   const [newProductForm, setNewProductForm] = useState({
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     default_price: 0,
-    default_unit: 'unitat',
-    category: '',
+    default_unit: "unitat",
+    category: "",
   });
 
   const resetForm = useCallback(() => {
     setFormData({
-      client_id: '',
-      issue_date: new Date().toISOString().split('T')[0],
-      due_date: '',
-      status: 'draft',
-      notes: '',
+      client_id: "",
+      issue_date: new Date().toISOString().split("T")[0],
+      due_date: "",
+      status: "draft",
+      notes: "",
       tax_rate: 21,
       labor_total: 0,
       items: [],
     });
     setEditingInvoice(null);
     setIsCreating(false);
-    setError('');
+    setError("");
   }, []);
 
   const handleEdit = async (invoice: Invoice) => {
@@ -109,17 +110,18 @@ export default function InvoiceEditor({
     setFormData({
       client_id: invoice.client_id,
       issue_date: invoice.issue_date,
-      due_date: invoice.due_date || '',
+      due_date: invoice.due_date || "",
       status: invoice.status,
-      notes: invoice.notes || '',
+      notes: invoice.notes || "",
       tax_rate: invoice.tax_rate || 21,
       labor_total: invoice.labor_total || 0,
-      items: (await getInvoiceItemsById(invoice.id)).map(item => ({
-        description: item.description,
-        quantity: Number(item.quantity),
-        unit: item.unit || 'unitat',
-        unit_price: Number(item.unit_price),
-      })) || [],
+      items:
+        (await getInvoiceItemsById(invoice.id)).map((item) => ({
+          description: item.description,
+          quantity: Number(item.quantity),
+          unit: item.unit || "unitat",
+          unit_price: Number(item.unit_price),
+        })) || [],
     });
     // console.log(formData)
   };
@@ -132,7 +134,10 @@ export default function InvoiceEditor({
   const addItem = () => {
     setFormData({
       ...formData,
-      items: [...formData.items, { description: '', quantity: 1, unit: 'unitat', unit_price: 0 }],
+      items: [
+        ...formData.items,
+        { description: "", quantity: 1, unit: "unitat", unit_price: 0 },
+      ],
     });
   };
 
@@ -142,7 +147,11 @@ export default function InvoiceEditor({
     setFormData({ ...formData, items: newItems });
   };
 
-  const updateItem = (index: number, field: keyof InvoiceItemForm, value: string | number) => {
+  const updateItem = (
+    index: number,
+    field: keyof InvoiceItemForm,
+    value: string | number
+  ) => {
     const newItems = [...formData.items];
     newItems[index] = { ...newItems[index], [field]: value };
     setFormData({ ...formData, items: newItems });
@@ -182,16 +191,16 @@ export default function InvoiceEditor({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     if (!formData.client_id) {
-      setError('Has de seleccionar un client');
+      setError("Has de seleccionar un client");
       setLoading(false);
       return;
     }
 
     if (formData.items.length === 0 && formData.labor_total === 0) {
-      setError('Has d\'afegir almenys un article o mà d\'obra');
+      setError("Has d'afegir almenys un article o mà d'obra");
       setLoading(false);
       return;
     }
@@ -200,20 +209,20 @@ export default function InvoiceEditor({
       if (editingInvoice) {
         const result = await updateInvoice(editingInvoice.id, formData);
         if (!result.success) {
-          setError(result.error || 'Error actualitzant');
+          setError(result.error || "Error actualitzant");
           return;
         }
       } else {
         const result = await createInvoice(formData);
         if (!result.success) {
-          setError(result.error || 'Error creant');
+          setError(result.error || "Error creant");
           return;
         }
       }
       resetForm();
       router.refresh();
     } catch {
-      setError('Error inesperat');
+      setError("Error inesperat");
     } finally {
       setLoading(false);
       setInvoices(await getAllInvoices());
@@ -221,18 +230,18 @@ export default function InvoiceEditor({
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Estàs segur que vols eliminar aquesta factura?')) return;
+    if (!confirm("Estàs segur que vols eliminar aquesta factura?")) return;
 
     setLoading(true);
     try {
       const result = await deleteInvoice(id);
       if (!result.success) {
-        setError(result.error || 'Error eliminant');
+        setError(result.error || "Error eliminant");
         return;
       }
       router.refresh();
     } catch {
-      setError('Error inesperat');
+      setError("Error inesperat");
     } finally {
       setLoading(false);
     }
@@ -243,16 +252,16 @@ export default function InvoiceEditor({
     try {
       const result = await updateInvoiceStatus(
         id,
-        status as 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
+        status as "draft" | "sent" | "paid" | "overdue" | "cancelled"
       );
       if (!result.success) {
-        setError(result.error || 'Error actualitzant estat');
+        setError(result.error || "Error actualitzant estat");
         return;
       }
       setInvoices(await getAllInvoices());
       router.refresh();
     } catch {
-      setError('Error inesperat');
+      setError("Error inesperat");
     } finally {
       setLoading(false);
     }
@@ -265,7 +274,7 @@ export default function InvoiceEditor({
     try {
       const result = await createClient(newClientForm);
       if (!result.success) {
-        setError(result.error || 'Error creant client');
+        setError(result.error || "Error creant client");
         return;
       }
       if (result.client) {
@@ -273,17 +282,17 @@ export default function InvoiceEditor({
         setFormData({ ...formData, client_id: result.client.id });
       }
       setNewClientForm({
-        name: '',
-        nif: '',
-        email: '',
-        phone: '',
-        address_line1: '',
-        city: '',
-        postal_code: '',
+        name: "",
+        nif: "",
+        email: "",
+        phone: "",
+        address_line1: "",
+        city: "",
+        postal_code: "",
       });
-      setShowClientModal('');
+      setShowClientModal("");
     } catch {
-      setError('Error inesperat');
+      setError("Error inesperat");
     } finally {
       setLoading(false);
     }
@@ -296,25 +305,28 @@ export default function InvoiceEditor({
     try {
       const result = await updateClient(showClientModal, newClientForm);
       if (!result.success) {
-        setError(result.error || 'Error creant client');
+        setError(result.error || "Error creant client");
         return;
       }
       if (result.client) {
-        setClients([...clients.filter(c => c.id !== result.client!.id), result.client]);
+        setClients([
+          ...clients.filter((c) => c.id !== result.client!.id),
+          result.client,
+        ]);
         setFormData({ ...formData, client_id: result.client.id });
       }
       setNewClientForm({
-        name: '',
-        nif: '',
-        email: '',
-        phone: '',
-        address_line1: '',
-        city: '',
-        postal_code: '',
+        name: "",
+        nif: "",
+        email: "",
+        phone: "",
+        address_line1: "",
+        city: "",
+        postal_code: "",
       });
-      setShowClientModal('');
+      setShowClientModal("");
     } catch {
-      setError('Error inesperat');
+      setError("Error inesperat");
     } finally {
       setLoading(false);
     }
@@ -327,38 +339,38 @@ export default function InvoiceEditor({
     try {
       const result = await createInvoiceProduct(newProductForm);
       if (!result.success) {
-        setError(result.error || 'Error creant producte');
+        setError(result.error || "Error creant producte");
         return;
       }
       if (result.product) {
         setProducts([...products, result.product]);
       }
       setNewProductForm({
-        name: '',
-        description: '',
+        name: "",
+        description: "",
         default_price: 0,
-        default_unit: 'unitat',
-        category: '',
+        default_unit: "unitat",
+        category: "",
       });
       setShowProductModal(false);
     } catch {
-      setError('Error inesperat');
+      setError("Error inesperat");
     } finally {
       setLoading(false);
     }
   };
 
   const getClientData = (field: keyof typeof newClientForm): string => {
-    return newClientForm[field] || '';
+    return newClientForm[field] || "";
   };
 
   const filteredInvoices = invoices.filter(
-    inv =>
+    (inv) =>
       inv.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
       inv.client?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const selectedClient = clients.find(c => c.id === formData.client_id);
+  const selectedClient = clients.find((c) => c.id === formData.client_id);
 
   return (
     <div>
@@ -375,7 +387,9 @@ export default function InvoiceEditor({
       </div>
 
       {error && (
-        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">{error}</div>
+        <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+          {error}
+        </div>
       )}
 
       {/* Create/Edit Form */}
@@ -383,9 +397,14 @@ export default function InvoiceEditor({
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-xl font-semibold">
-              {editingInvoice ? `Editar Factura ${editingInvoice.number}` : 'Nova Factura'}
+              {editingInvoice
+                ? `Editar Factura ${editingInvoice.number}`
+                : "Nova Factura"}
             </h2>
-            <button onClick={resetForm} className="text-gray-500 hover:text-gray-700">
+            <button
+              onClick={resetForm}
+              className="text-gray-500 hover:text-gray-700"
+            >
               ✕
             </button>
           </div>
@@ -400,14 +419,16 @@ export default function InvoiceEditor({
                 <div className="flex gap-2">
                   <select
                     value={formData.client_id}
-                    onChange={e => setFormData({ ...formData, client_id: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, client_id: e.target.value })
+                    }
                     className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
                     required
                   >
                     <option value="">Selecciona un client...</option>
-                    {clients.map(client => (
+                    {clients.map((client) => (
                       <option key={client.id} value={client.id}>
-                        {client.name} {client.nif ? `(${client.nif})` : ''}
+                        {client.name} {client.nif ? `(${client.nif})` : ""}
                       </option>
                     ))}
                   </select>
@@ -415,43 +436,53 @@ export default function InvoiceEditor({
                     type="button"
                     onClick={() => {
                       if (formData.client_id) {
-                        const client = clients.find(c => c.id === formData.client_id);
+                        const client = clients.find(
+                          (c) => c.id === formData.client_id
+                        );
                         if (client) {
                           setNewClientForm({
-                            name: client.name || '',
-                            nif: client.nif || '',
-                            email: client.email || '',
-                            phone: client.phone || '',
-                            address_line1: client.address_line1 || '',
-                            city: client.city || '',
-                            postal_code: client.postal_code || '',
+                            name: client.name || "",
+                            nif: client.nif || "",
+                            email: client.email || "",
+                            phone: client.phone || "",
+                            address_line1: client.address_line1 || "",
+                            city: client.city || "",
+                            postal_code: client.postal_code || "",
                           });
                         }
                         setShowClientModal(formData.client_id);
                       } else {
                         setNewClientForm({
-                          name: '',
-                          nif: '',
-                          email: '',
-                          phone: '',
-                          address_line1: '',
-                          city: '',
-                          postal_code: '',
+                          name: "",
+                          nif: "",
+                          email: "",
+                          phone: "",
+                          address_line1: "",
+                          city: "",
+                          postal_code: "",
                         });
-                        setShowClientModal('new');
+                        setShowClientModal("new");
                       }
                     }}
                     className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                   >
-                    {formData.client_id ? 'Editar' : '+ Nou'}
+                    {formData.client_id ? "Editar" : "+ Nou"}
                   </button>
                 </div>
                 {selectedClient && (
                   <div className="mt-2 p-3 bg-gray-50 rounded-lg text-sm">
-                    <p><strong>{selectedClient.name}</strong></p>
+                    <p>
+                      <strong>{selectedClient.name}</strong>
+                    </p>
                     {selectedClient.nif && <p>NIF: {selectedClient.nif}</p>}
-                    {selectedClient.address_line1 && <p>{selectedClient.address_line1}</p>}
-                    {selectedClient.city && <p>{selectedClient.postal_code} {selectedClient.city}</p>}
+                    {selectedClient.address_line1 && (
+                      <p>{selectedClient.address_line1}</p>
+                    )}
+                    {selectedClient.city && (
+                      <p>
+                        {selectedClient.postal_code} {selectedClient.city}
+                      </p>
+                    )}
                     {selectedClient.phone && <p>Tel: {selectedClient.phone}</p>}
                   </div>
                 )}
@@ -465,7 +496,9 @@ export default function InvoiceEditor({
                   <input
                     type="date"
                     value={formData.issue_date}
-                    onChange={e => { setFormData({ ...formData, issue_date: e.target.value })}}
+                    onChange={(e) => {
+                      setFormData({ ...formData, issue_date: e.target.value });
+                    }}
                     className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
                     required
                   />
@@ -476,7 +509,9 @@ export default function InvoiceEditor({
                   </label>
                   <select
                     value={formData.status}
-                    onChange={e => setFormData({ ...formData, status: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, status: e.target.value })
+                    }
                     className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
                   >
                     {Object.entries(statusLabels).map(([value, { label }]) => (
@@ -516,18 +551,22 @@ export default function InvoiceEditor({
               {/* Products Quick Add */}
               {products.length > 0 && (
                 <div className="mb-4 p-3 bg-gray-50 rounded-lg">
-                  <p className="text-sm text-gray-600 mb-2">Afegir producte guardat:</p>
+                  <p className="text-sm text-gray-600 mb-2">
+                    Afegir producte guardat:
+                  </p>
                   <div className="flex flex-wrap gap-2">
-                    {products.map(product => (
-                        <button
-                          key={product.id}
-                          type="button"
-                          onClick={() => addProductAsItem(product)}
-                          className="px-2 py-1 text-xs bg-white border rounded hover:bg-gray-100"
-                        >
-                          {product.name} ({Number(product.default_price).toFixed(2)}€/{product.default_unit})
-                        </button>
-                      ))}
+                    {products.map((product) => (
+                      <button
+                        key={product.id}
+                        type="button"
+                        onClick={() => addProductAsItem(product)}
+                        className="px-2 py-1 text-xs bg-white border rounded hover:bg-gray-100"
+                      >
+                        {product.name} (
+                        {Number(product.default_price).toFixed(2)}€/
+                        {product.default_unit})
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}
@@ -562,7 +601,9 @@ export default function InvoiceEditor({
                           <input
                             type="text"
                             value={item.description}
-                            onChange={e => updateItem(index, 'description', e.target.value)}
+                            onChange={(e) =>
+                              updateItem(index, "description", e.target.value)
+                            }
                             className="w-full p-1 border rounded focus:ring-1 focus:ring-green-500"
                             placeholder="Descripció..."
                           />
@@ -570,10 +611,12 @@ export default function InvoiceEditor({
                         <td className="px-2 py-2">
                           <select
                             value={item.unit}
-                            onChange={e => updateItem(index, 'unit', e.target.value)}
+                            onChange={(e) =>
+                              updateItem(index, "unit", e.target.value)
+                            }
                             className="w-full p-1 border rounded focus:ring-1 focus:ring-green-500 text-sm"
                           >
-                            {units.map(u => (
+                            {units.map((u) => (
                               <option key={u} value={u}>
                                 {u}
                               </option>
@@ -584,8 +627,12 @@ export default function InvoiceEditor({
                           <input
                             type="number"
                             value={item.quantity}
-                            onChange={e =>
-                              updateItem(index, 'quantity', parseFloat(e.target.value) || 0)
+                            onChange={(e) =>
+                              updateItem(
+                                index,
+                                "quantity",
+                                parseFloat(e.target.value) || 0
+                              )
                             }
                             className="w-full p-1 border rounded focus:ring-1 focus:ring-green-500 text-center"
                             step="0.01"
@@ -596,8 +643,12 @@ export default function InvoiceEditor({
                           <input
                             type="number"
                             value={item.unit_price}
-                            onChange={e =>
-                              updateItem(index, 'unit_price', parseFloat(e.target.value) || 0)
+                            onChange={(e) =>
+                              updateItem(
+                                index,
+                                "unit_price",
+                                parseFloat(e.target.value) || 0
+                              )
                             }
                             className="w-full p-1 border rounded focus:ring-1 focus:ring-green-500 text-right"
                             step="0.01"
@@ -620,7 +671,10 @@ export default function InvoiceEditor({
                     ))}
                     {formData.items.length === 0 && (
                       <tr>
-                        <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                        <td
+                          colSpan={6}
+                          className="px-4 py-8 text-center text-gray-500"
+                        >
                           Cap article afegit. Afegeix articles o mà d&apos;obra.
                         </td>
                       </tr>
@@ -639,8 +693,11 @@ export default function InvoiceEditor({
                 <input
                   type="number"
                   value={formData.labor_total}
-                  onChange={e =>
-                    setFormData({ ...formData, labor_total: parseFloat(e.target.value) || 0 })
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      labor_total: parseFloat(e.target.value) || 0,
+                    })
                   }
                   className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
                   step="0.01"
@@ -651,7 +708,9 @@ export default function InvoiceEditor({
               <div className="bg-gray-50 p-4 rounded-lg">
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-600">Base Imponible:</span>
-                  <span className="font-medium">{calculateSubtotal().toFixed(2)}€</span>
+                  <span className="font-medium">
+                    {calculateSubtotal().toFixed(2)}€
+                  </span>
                 </div>
                 <div className="flex justify-between mb-2 items-center">
                   <span className="text-gray-600 flex items-center gap-2">
@@ -659,8 +718,11 @@ export default function InvoiceEditor({
                     <input
                       type="number"
                       value={formData.tax_rate}
-                      onChange={e =>
-                        setFormData({ ...formData, tax_rate: parseFloat(e.target.value) || 0 })
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          tax_rate: parseFloat(e.target.value) || 0,
+                        })
                       }
                       className="w-16 p-1 border rounded text-center text-sm"
                       step="0.5"
@@ -668,7 +730,9 @@ export default function InvoiceEditor({
                     />
                     %:
                   </span>
-                  <span className="font-medium">{calculateTax().toFixed(2)}€</span>
+                  <span className="font-medium">
+                    {calculateTax().toFixed(2)}€
+                  </span>
                 </div>
                 <div className="flex justify-between pt-2 border-t border-gray-300">
                   <span className="font-semibold text-lg">Total:</span>
@@ -681,10 +745,14 @@ export default function InvoiceEditor({
 
             {/* Notes */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Notes
+              </label>
               <textarea
                 value={formData.notes}
-                onChange={e => setFormData({ ...formData, notes: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, notes: e.target.value })
+                }
                 className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
                 rows={3}
               />
@@ -703,7 +771,11 @@ export default function InvoiceEditor({
                 disabled={loading}
                 className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
               >
-                {loading ? 'Guardant...' : editingInvoice ? 'Actualitzar' : 'Crear Factura'}
+                {loading
+                  ? "Guardant..."
+                  : editingInvoice
+                  ? "Actualitzar"
+                  : "Crear Factura"}
               </button>
             </div>
           </form>
@@ -718,7 +790,7 @@ export default function InvoiceEditor({
               type="text"
               placeholder="Cercar per número o client..."
               value={searchTerm}
-              onChange={e => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full md:w-80 p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
             />
           </div>
@@ -727,35 +799,53 @@ export default function InvoiceEditor({
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Nº</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Client</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Data</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Estat</th>
-                  <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">Total</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                    Nº
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                    Client
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                    Data
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                    Estat
+                  </th>
+                  <th className="px-4 py-3 text-right text-sm font-medium text-gray-700">
+                    Total
+                  </th>
                   <th className="px-4 py-3 text-center text-sm font-medium text-gray-700">
                     Accions
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {filteredInvoices.map(invoice => (
+                {filteredInvoices.map((invoice) => (
                   <tr key={invoice.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-mono text-sm">{invoice.number}</td>
-                    <td className="px-4 py-3">{invoice.client?.name || '-'}</td>
+                    <td className="px-4 py-3 font-mono text-sm">
+                      {invoice.number}
+                    </td>
+                    <td className="px-4 py-3">{invoice.client?.name || "-"}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">
-                      {new Date(invoice.issue_date).toLocaleDateString('ca-ES')}
+                      {new Date(invoice.issue_date).toLocaleDateString("ca-ES")}
                     </td>
                     <td className="px-4 py-3">
                       <select
                         value={invoice.status}
-                        onChange={e => handleStatusChange(invoice.id, e.target.value)}
-                        className={`text-xs px-2 py-1 rounded-full font-medium ${statusLabels[invoice.status]?.color || ''}`}
+                        onChange={(e) =>
+                          handleStatusChange(invoice.id, e.target.value)
+                        }
+                        className={`text-xs px-2 py-1 rounded-full font-medium ${
+                          statusLabels[invoice.status]?.color || ""
+                        }`}
                       >
-                        {Object.entries(statusLabels).map(([value, { label }]) => (
-                          <option key={value} value={value}>
-                            {label}
-                          </option>
-                        ))}
+                        {Object.entries(statusLabels).map(
+                          ([value, { label }]) => (
+                            <option key={value} value={value}>
+                              {label}
+                            </option>
+                          )
+                        )}
                       </select>
                     </td>
                     <td className="px-4 py-3 text-right font-medium">
@@ -778,10 +868,10 @@ export default function InvoiceEditor({
                               if (result.success) {
                                 setInvoices(await getAllInvoices());
                               } else {
-                                setError(result.error || 'Error enviant email');
+                                setError(result.error || "Error enviant email");
                               }
                             } catch {
-                              setError('Error enviant email');
+                              setError("Error enviant email");
                             } finally {
                               setSendingInvoiceId(null);
                             }
@@ -789,7 +879,9 @@ export default function InvoiceEditor({
                           disabled={sendingInvoiceId === invoice.id}
                           className="px-2 py-1 text-sm text-indigo-600 hover:bg-indigo-50 rounded disabled:opacity-50"
                         >
-                          {sendingInvoiceId === invoice.id ? 'Enviant...' : 'Enviar'}
+                          {sendingInvoiceId === invoice.id
+                            ? "Enviant..."
+                            : "Enviar"}
                         </button>
                         <a
                           href={`/api/admin/invoices/${invoice.id}/pdf`}
@@ -811,10 +903,13 @@ export default function InvoiceEditor({
                 ))}
                 {filteredInvoices.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="px-4 py-8 text-center text-gray-500">
+                    <td
+                      colSpan={6}
+                      className="px-4 py-8 text-center text-gray-500"
+                    >
                       {invoices.length === 0
-                        ? 'No hi ha factures. Crea la primera!'
-                        : 'No s\'han trobat factures'}
+                        ? "No hi ha factures. Crea la primera!"
+                        : "No s'han trobat factures"}
                     </td>
                   </tr>
                 )}
@@ -828,84 +923,164 @@ export default function InvoiceEditor({
       {showClientModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-lg font-semibold mb-4">Nou Client</h3>
-            <form onSubmit={showClientModal === 'new' ? handleCreateClient : handleUpdateClient} className="space-y-4">
+            <h3 className="text-lg font-semibold mb-4">
+              {showClientModal === "new" ? "Nou Client" : "Editar Client"}
+            </h3>
+            <form
+              onSubmit={
+                showClientModal === "new"
+                  ? handleCreateClient
+                  : handleUpdateClient
+              }
+              className="space-y-4"
+            >
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nom *
+                </label>
                 <input
                   type="text"
-                  value={getClientData('name')}
-                  onChange={e => setNewClientForm({ ...newClientForm, name: e.target.value })}
+                  value={getClientData("name")}
+                  onChange={(e) =>
+                    setNewClientForm({ ...newClientForm, name: e.target.value })
+                  }
                   className="w-full p-2 border rounded-lg"
                   required
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">N.I.F.</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    N.I.F.
+                  </label>
                   <input
                     type="text"
-                    value={getClientData('nif')}
-                    onChange={e => setNewClientForm({ ...newClientForm, nif: e.target.value })}
+                    value={getClientData("nif")}
+                    onChange={(e) =>
+                      setNewClientForm({
+                        ...newClientForm,
+                        nif: e.target.value,
+                      })
+                    }
                     className="w-full p-2 border rounded-lg"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Telèfon</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Telèfon
+                  </label>
                   <input
                     type="text"
-                    value={getClientData('phone')}
-                    onChange={e => setNewClientForm({ ...newClientForm, phone: e.target.value })}
+                    value={getClientData("phone")}
+                    onChange={(e) =>
+                      setNewClientForm({
+                        ...newClientForm,
+                        phone: e.target.value,
+                      })
+                    }
                     className="w-full p-2 border rounded-lg"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
                 <input
                   type="email"
-                  value={getClientData('email')}
-                  onChange={e => setNewClientForm({ ...newClientForm, email: e.target.value })}
+                  value={getClientData("email")}
+                  onChange={(e) =>
+                    setNewClientForm({
+                      ...newClientForm,
+                      email: e.target.value,
+                    })
+                  }
                   className="w-full p-2 border rounded-lg"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Domicili</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Domicili
+                </label>
                 <input
                   type="text"
-                  value={getClientData('address_line1')}
-                  onChange={e =>
-                    setNewClientForm({ ...newClientForm, address_line1: e.target.value })
+                  value={getClientData("address_line1")}
+                  onChange={(e) =>
+                    setNewClientForm({
+                      ...newClientForm,
+                      address_line1: e.target.value,
+                    })
                   }
                   className="w-full p-2 border rounded-lg"
                 />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Codi Postal</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Codi Postal
+                  </label>
                   <input
                     type="text"
-                    value={getClientData('postal_code')}
-                    onChange={e =>
-                      setNewClientForm({ ...newClientForm, postal_code: e.target.value })
+                    value={getClientData("postal_code")}
+                    onChange={(e) =>
+                      setNewClientForm({
+                        ...newClientForm,
+                        postal_code: e.target.value,
+                      })
                     }
                     className="w-full p-2 border rounded-lg"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Població</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Població
+                  </label>
                   <input
                     type="text"
-                    value={getClientData('city')}
-                    onChange={e => setNewClientForm({ ...newClientForm, city: e.target.value })}
+                    value={getClientData("city")}
+                    onChange={(e) =>
+                      setNewClientForm({
+                        ...newClientForm,
+                        city: e.target.value,
+                      })
+                    }
                     className="w-full p-2 border rounded-lg"
                   />
                 </div>
               </div>
               <div className="flex justify-end gap-3 pt-4">
+                {showClientModal === "new" ? null : (
+                  <button className="px-4 py-2 text-white rounded-lg bg-red-600 hover:bg-red-700"
+                    type="button"
+                    onClick={async () => {
+                      if (!confirm("Estàs segur que vols eliminar aquest client?")) return;
+                      setLoading(true); 
+                        try {
+                            const result = await deleteClient(showClientModal);
+                            if (!result.success) {
+                                setError(result.error || "Error eliminant client");
+                                return;
+                            }
+                            setClients(clients.filter(c => c.id !== showClientModal));
+                            if (formData.client_id === showClientModal) {
+                                setFormData({ ...formData, client_id: "" });
+                            }
+                            setShowClientModal("");
+                        }
+                        catch {
+                            setError("Error inesperat");
+                        }
+                        finally {
+                            setLoading(false);
+                        }
+                    }}
+                  >
+                    Eliminar
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={() => setShowClientModal('')}
+                  onClick={() => setShowClientModal("")}
                   className="px-4 py-2 border rounded-lg hover:bg-gray-50"
                 >
                   Cancel·lar
@@ -915,7 +1090,11 @@ export default function InvoiceEditor({
                   disabled={loading}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                 >
-                  {loading ? 'Guardant...' : showClientModal === 'new' ? 'Crear Client' : 'Actualitzar Client'}
+                  {loading
+                    ? "Guardant..."
+                    : showClientModal === "new"
+                    ? "Crear Client"
+                    : "Actualitzar Client"}
                 </button>
               </div>
             </form>
@@ -930,21 +1109,33 @@ export default function InvoiceEditor({
             <h3 className="text-lg font-semibold mb-4">Nou Producte/Servei</h3>
             <form onSubmit={handleCreateProduct} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nom *
+                </label>
                 <input
                   type="text"
                   value={newProductForm.name}
-                  onChange={e => setNewProductForm({ ...newProductForm, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewProductForm({
+                      ...newProductForm,
+                      name: e.target.value,
+                    })
+                  }
                   className="w-full p-2 border rounded-lg"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Descripció</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Descripció
+                </label>
                 <textarea
                   value={newProductForm.description}
-                  onChange={e =>
-                    setNewProductForm({ ...newProductForm, description: e.target.value })
+                  onChange={(e) =>
+                    setNewProductForm({
+                      ...newProductForm,
+                      description: e.target.value,
+                    })
                   }
                   className="w-full p-2 border rounded-lg"
                   rows={2}
@@ -958,7 +1149,7 @@ export default function InvoiceEditor({
                   <input
                     type="number"
                     value={newProductForm.default_price}
-                    onChange={e =>
+                    onChange={(e) =>
                       setNewProductForm({
                         ...newProductForm,
                         default_price: parseFloat(e.target.value) || 0,
@@ -970,15 +1161,20 @@ export default function InvoiceEditor({
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Unitat</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Unitat
+                  </label>
                   <select
                     value={newProductForm.default_unit}
-                    onChange={e =>
-                      setNewProductForm({ ...newProductForm, default_unit: e.target.value })
+                    onChange={(e) =>
+                      setNewProductForm({
+                        ...newProductForm,
+                        default_unit: e.target.value,
+                      })
                     }
                     className="w-full p-2 border rounded-lg"
                   >
-                    {units.map(u => (
+                    {units.map((u) => (
                       <option key={u} value={u}>
                         {u}
                       </option>
@@ -987,12 +1183,17 @@ export default function InvoiceEditor({
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Categoria
+                </label>
                 <input
                   type="text"
                   value={newProductForm.category}
-                  onChange={e =>
-                    setNewProductForm({ ...newProductForm, category: e.target.value })
+                  onChange={(e) =>
+                    setNewProductForm({
+                      ...newProductForm,
+                      category: e.target.value,
+                    })
                   }
                   className="w-full p-2 border rounded-lg"
                   placeholder="Ex: Pintura, Fusteria..."
@@ -1011,7 +1212,7 @@ export default function InvoiceEditor({
                   disabled={loading}
                   className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50"
                 >
-                  {loading ? 'Guardant...' : 'Crear Producte'}
+                  {loading ? "Guardant..." : "Crear Producte"}
                 </button>
               </div>
             </form>
