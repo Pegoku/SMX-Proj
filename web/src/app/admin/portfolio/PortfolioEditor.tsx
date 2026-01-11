@@ -1,52 +1,63 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import type { PortfolioItem } from '@/types';
-import { createPortfolioItem, updatePortfolioItem, deletePortfolioItem } from '../actions';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import type { PortfolioItem } from "@/types";
+import {
+  createPortfolioItem,
+  updatePortfolioItem,
+  deletePortfolioItem,
+} from "../actions";
 
 interface PortfolioEditorProps {
   initialItems: PortfolioItem[];
 }
 
-const categories = ['Pintura Interior', 'Pintura Exterior', 'Carpinteria', 'Barnissat'];
+const categories = [
+  "Pintura Interior",
+  "Pintura Exterior",
+  "Carpinteria",
+  "Barnissat",
+];
 
-type SortField = 'title' | 'category' | 'display_order';
-type SortDirection = 'asc' | 'desc';
+type SortField = "title" | "category" | "display_order";
+type SortDirection = "asc" | "desc";
 
-export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) {
+export default function PortfolioEditor({
+  initialItems,
+}: PortfolioEditorProps) {
   const [items, setItems] = useState(initialItems);
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [sortField, setSortField] = useState<SortField>('display_order');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+  const [error, setError] = useState("");
+  const [sortField, setSortField] = useState<SortField>("display_order");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const router = useRouter();
 
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    image_url: '',
-    before_image_url: '',
-    after_image_url: '',
-    category: '',
+    title: "",
+    description: "",
+    image_url: "",
+    before_image_url: "",
+    after_image_url: "",
+    category: "",
     display_order: 0,
   });
 
   const resetForm = () => {
     setFormData({
-      title: '',
-      description: '',
-      image_url: '',
-      before_image_url: '',
-      after_image_url: '',
-      category: '',
+      title: "",
+      description: "",
+      image_url: "",
+      before_image_url: "",
+      after_image_url: "",
+      category: "",
       display_order: 0,
     });
     setEditingItem(null);
     setIsCreating(false);
-    setError('');
+    setError("");
   };
 
   const handleEdit = (item: PortfolioItem) => {
@@ -56,9 +67,9 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
       title: item.title,
       description: item.description,
       image_url: item.image_url,
-      before_image_url: item.before_image_url || '',
-      after_image_url: item.after_image_url || '',
-      category: item.category || '',
+      before_image_url: item.before_image_url || "",
+      after_image_url: item.after_image_url || "",
+      category: item.category || "",
       display_order: item.display_order || 0,
     });
   };
@@ -71,33 +82,33 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       if (editingItem) {
         const result = await updatePortfolioItem(editingItem.id, formData);
         if (!result.success) {
-          setError(result.error || 'Error actualitzant');
+          setError(result.error || "Error actualitzant");
           return;
         }
       } else {
         const result = await createPortfolioItem(formData);
         if (!result.success) {
-          setError(result.error || 'Error creant');
+          setError(result.error || "Error creant");
           return;
         }
       }
       resetForm();
       router.refresh();
     } catch {
-      setError('Error inesperat');
+      setError("Error inesperat");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Estàs segur que vols eliminar aquest treball?')) return;
+    if (!confirm("Estàs segur que vols eliminar aquest treball?")) return;
 
     setLoading(true);
     try {
@@ -105,10 +116,10 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
       if (result.success) {
         router.refresh();
       } else {
-        setError(result.error || 'Error eliminant');
+        setError(result.error || "Error eliminant");
       }
     } catch {
-      setError('Error inesperat');
+      setError("Error inesperat");
     } finally {
       setLoading(false);
     }
@@ -116,39 +127,38 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
       setSortField(field);
-      setSortDirection('asc');
+      setSortDirection("asc");
     }
   };
 
   const sortedItems = [...items].sort((a, b) => {
     const aVal = a[sortField];
     const bVal = b[sortField];
-    
+
     if (aVal === null || aVal === undefined) return 1;
     if (bVal === null || bVal === undefined) return -1;
-    
+
     let comparison = 0;
-    if (typeof aVal === 'string' && typeof bVal === 'string') {
+    if (typeof aVal === "string" && typeof bVal === "string") {
       comparison = aVal.localeCompare(bVal);
-    } else if (typeof aVal === 'number' && typeof bVal === 'number') {
+    } else if (typeof aVal === "number" && typeof bVal === "number") {
       comparison = aVal - bVal;
     }
-    
-    return sortDirection === 'asc' ? comparison : -comparison;
+
+    return sortDirection === "asc" ? comparison : -comparison;
   });
 
-  const SortIcon = ({ field }: { field: SortField }) => (
+  const SortIcon = ({ field }: { field: SortField }) =>
     sortField === field ? (
       <span className="ml-1 inline-block">
-        {sortDirection === 'asc' ? '↑' : '↓'}
+        {sortDirection === "asc" ? "↑" : "↓"}
       </span>
     ) : (
       <span className="ml-1 inline-block text-gray-300">↕</span>
-    )
-  );
+    );
 
   return (
     <div className="space-y-6">
@@ -166,40 +176,54 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
       {(isCreating || editingItem) && (
         <div className="bg-white rounded-lg shadow-md p-6">
           <h2 className="text-lg font-semibold mb-4">
-            {editingItem ? 'Editar Treball' : 'Nou Treball'}
+            {editingItem ? "Editar Treball" : "Nou Treball"}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Títol *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Títol *
+                </label>
                 <input
                   type="text"
                   value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, title: e.target.value })
+                  }
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Categoria</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Categoria
+                </label>
                 <select
                   value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, category: e.target.value })
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 >
                   <option value="">Selecciona...</option>
                   {categories.map((cat) => (
-                    <option key={cat} value={cat}>{cat}</option>
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Descripció *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Descripció *
+              </label>
               <textarea
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, description: e.target.value })
+                }
                 required
                 rows={3}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -208,32 +232,50 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Imatge Principal *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Imatge Principal *
+                </label>
                 <input
                   type="url"
                   value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, image_url: e.target.value })
+                  }
                   required
                   placeholder="https://..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Imatge Abans</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Imatge Abans
+                </label>
                 <input
                   type="url"
                   value={formData.before_image_url}
-                  onChange={(e) => setFormData({ ...formData, before_image_url: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      before_image_url: e.target.value,
+                    })
+                  }
                   placeholder="https://..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Imatge Després</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Imatge Després
+                </label>
                 <input
                   type="url"
                   value={formData.after_image_url}
-                  onChange={(e) => setFormData({ ...formData, after_image_url: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      after_image_url: e.target.value,
+                    })
+                  }
                   placeholder="https://..."
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
@@ -241,11 +283,18 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
             </div>
 
             <div className="w-32">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Ordre</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Ordre
+              </label>
               <input
                 type="number"
                 value={formData.display_order}
-                onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    display_order: parseInt(e.target.value) || 0,
+                  })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
               />
             </div>
@@ -258,7 +307,11 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
                 disabled={loading}
                 className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50"
               >
-                {loading ? 'Guardant...' : editingItem ? 'Actualitzar' : 'Crear'}
+                {loading
+                  ? "Guardant..."
+                  : editingItem
+                    ? "Actualitzar"
+                    : "Crear"}
               </button>
               <button
                 type="button"
@@ -277,26 +330,33 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
         <table className="w-full">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Imatge</th>
-              <th 
-                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
-                onClick={() => handleSort('title')}
-              >
-                Títol<SortIcon field="title" />
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Imatge
               </th>
-              <th 
+              <th
                 className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
-                onClick={() => handleSort('category')}
+                onClick={() => handleSort("title")}
               >
-                Categoria<SortIcon field="category" />
+                Títol
+                <SortIcon field="title" />
               </th>
-              <th 
+              <th
                 className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
-                onClick={() => handleSort('display_order')}
+                onClick={() => handleSort("category")}
               >
-                Ordre<SortIcon field="display_order" />
+                Categoria
+                <SortIcon field="category" />
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Accions</th>
+              <th
+                className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase cursor-pointer hover:text-gray-700"
+                onClick={() => handleSort("display_order")}
+              >
+                Ordre
+                <SortIcon field="display_order" />
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                Accions
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -317,11 +377,19 @@ export default function PortfolioEditor({ initialItems }: PortfolioEditorProps) 
                     />
                   </td>
                   <td className="px-4 py-3">
-                    <div className="font-medium text-gray-900">{item.title}</div>
-                    <div className="text-sm text-gray-500 truncate max-w-xs">{item.description}</div>
+                    <div className="font-medium text-gray-900">
+                      {item.title}
+                    </div>
+                    <div className="text-sm text-gray-500 truncate max-w-xs">
+                      {item.description}
+                    </div>
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{item.category || '-'}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{item.display_order || 0}</td>
+                  <td className="px-4 py-3 text-sm text-gray-600">
+                    {item.category || "-"}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-600">
+                    {item.display_order || 0}
+                  </td>
                   <td className="px-4 py-3">
                     <div className="flex gap-2">
                       <button

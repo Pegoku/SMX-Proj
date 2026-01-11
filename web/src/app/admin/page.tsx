@@ -1,23 +1,31 @@
 // Force dynamic rendering so admin thread list isn't prerendered at build time
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-import Link from 'next/link';
-import { getThreads } from '@/app/actions';
-import { getAllPortfolioItems, getAllMaterials, getAllServices } from './actions';
-import { getAllInvoices } from './invoices/actions';
+import Link from "next/link";
+import { getThreads } from "@/app/actions";
+import {
+  getAllPortfolioItems,
+  getAllMaterials,
+  getAllServices,
+} from "./actions";
+import { getAllInvoices } from "./invoices/actions";
 
 export default async function AdminPage() {
-  const [threads, portfolio, materials, services, invoices] = await Promise.all([
-    getThreads(),
-    getAllPortfolioItems(),
-    getAllMaterials(),
-    getAllServices(),
-    getAllInvoices(),
-  ]);
+  const [threads, portfolio, materials, services, invoices] = await Promise.all(
+    [
+      getThreads(),
+      getAllPortfolioItems(),
+      getAllMaterials(),
+      getAllServices(),
+      getAllInvoices(),
+    ],
+  );
 
-  const newThreads = threads.filter(t => t.status === 'new').length;
-  const pendingInvoices = invoices.filter(i => i.status === 'draft' || i.status === 'sent').length;
+  const newThreads = threads.filter((t) => t.status === "new").length;
+  const pendingInvoices = invoices.filter(
+    (i) => i.status === "draft" || i.status === "sent",
+  ).length;
 
   return (
     <div className="py-8">
@@ -28,11 +36,16 @@ export default async function AdminPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {/* Threads Card */}
-          <Link href="/admin/threads" className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <Link
+            href="/admin/threads"
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">Consultes</p>
-                <p className="text-3xl font-bold text-gray-800">{threads.length}</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {threads.length}
+                </p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
                 <span className="text-2xl">📧</span>
@@ -44,27 +57,39 @@ export default async function AdminPage() {
           </Link>
 
           {/* Invoices Card */}
-          <Link href="/admin/invoices" className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <Link
+            href="/admin/invoices"
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">Factures</p>
-                <p className="text-3xl font-bold text-gray-800">{invoices.length}</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {invoices.length}
+                </p>
               </div>
               <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center">
                 <span className="text-2xl">📄</span>
               </div>
             </div>
             {pendingInvoices > 0 && (
-              <p className="text-sm text-yellow-600 mt-2">{pendingInvoices} pendents</p>
+              <p className="text-sm text-yellow-600 mt-2">
+                {pendingInvoices} pendents
+              </p>
             )}
           </Link>
 
           {/* Portfolio Card */}
-          <Link href="/admin/portfolio" className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <Link
+            href="/admin/portfolio"
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">Treballs</p>
-                <p className="text-3xl font-bold text-gray-800">{portfolio.length}</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {portfolio.length}
+                </p>
               </div>
               <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
                 <span className="text-2xl">🖼️</span>
@@ -73,11 +98,16 @@ export default async function AdminPage() {
           </Link>
 
           {/* Materials Card */}
-          <Link href="/admin/materials" className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <Link
+            href="/admin/materials"
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">Materials</p>
-                <p className="text-3xl font-bold text-gray-800">{materials.length}</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {materials.length}
+                </p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
                 <span className="text-2xl">🛠️</span>
@@ -86,11 +116,16 @@ export default async function AdminPage() {
           </Link>
 
           {/* Services Card */}
-          <Link href="/admin/services" className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <Link
+            href="/admin/services"
+            className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-gray-500 text-sm">Serveis</p>
-                <p className="text-3xl font-bold text-gray-800">{services.length}</p>
+                <p className="text-3xl font-bold text-gray-800">
+                  {services.length}
+                </p>
               </div>
               <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
                 <span className="text-2xl">⚡</span>

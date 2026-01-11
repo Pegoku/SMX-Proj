@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 import sql from "@/lib/db";
 import { revalidatePath } from "next/cache";
@@ -23,12 +23,12 @@ export async function createPortfolioItem(data: {
       VALUES (${data.title}, ${data.description}, ${data.image_url}, ${data.before_image_url || null}, ${data.after_image_url || null}, ${data.category || null}, ${data.display_order || 0}, TRUE)
       RETURNING id
     `;
-    revalidatePath('/admin/portfolio');
-    revalidatePath('/portfolio');
+    revalidatePath("/admin/portfolio");
+    revalidatePath("/portfolio");
     return { success: true, id: result[0].id };
   } catch (error) {
-    console.error('Failed to create portfolio item:', error);
-    return { success: false, error: 'Error creant el treball' };
+    console.error("Failed to create portfolio item:", error);
+    return { success: false, error: "Error creant el treball" };
   }
 }
 
@@ -43,7 +43,7 @@ export async function updatePortfolioItem(
     category?: string;
     display_order?: number;
     visible?: boolean;
-  }
+  },
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await sql`
@@ -59,24 +59,26 @@ export async function updatePortfolioItem(
         updated_at = NOW()
       WHERE id = ${id}
     `;
-    revalidatePath('/admin/portfolio');
-    revalidatePath('/portfolio');
+    revalidatePath("/admin/portfolio");
+    revalidatePath("/portfolio");
     return { success: true };
   } catch (error) {
-    console.error('Failed to update portfolio item:', error);
-    return { success: false, error: 'Error actualitzant el treball' };
+    console.error("Failed to update portfolio item:", error);
+    return { success: false, error: "Error actualitzant el treball" };
   }
 }
 
-export async function deletePortfolioItem(id: string): Promise<{ success: boolean; error?: string }> {
+export async function deletePortfolioItem(
+  id: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
     await sql`DELETE FROM portfolio_items WHERE id = ${id}`;
-    revalidatePath('/admin/portfolio');
-    revalidatePath('/portfolio');
+    revalidatePath("/admin/portfolio");
+    revalidatePath("/portfolio");
     return { success: true };
   } catch (error) {
-    console.error('Failed to delete portfolio item:', error);
-    return { success: false, error: 'Error eliminant el treball' };
+    console.error("Failed to delete portfolio item:", error);
+    return { success: false, error: "Error eliminant el treball" };
   }
 }
 
@@ -89,7 +91,7 @@ export async function getAllPortfolioItems(): Promise<PortfolioItem[]> {
     `;
     return items as unknown as PortfolioItem[];
   } catch (error) {
-    console.error('Failed to fetch portfolio items:', error);
+    console.error("Failed to fetch portfolio items:", error);
     return [];
   }
 }
@@ -115,12 +117,12 @@ export async function createMaterial(data: {
       VALUES (${data.name}, ${data.description}, ${data.category}, ${data.brand || null}, ${data.unit}, ${data.price}, ${data.stock_quantity}, ${data.image_url || null}, ${data.is_available ?? true}, TRUE)
       RETURNING id
     `;
-    revalidatePath('/admin/materials');
-    revalidatePath('/materials');
+    revalidatePath("/admin/materials");
+    revalidatePath("/materials");
     return { success: true, id: result[0].id };
   } catch (error) {
-    console.error('Failed to create material:', error);
-    return { success: false, error: 'Error creant el material' };
+    console.error("Failed to create material:", error);
+    return { success: false, error: "Error creant el material" };
   }
 }
 
@@ -137,7 +139,7 @@ export async function updateMaterial(
     image_url?: string;
     is_available?: boolean;
     is_visible?: boolean;
-  }
+  },
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await sql`
@@ -155,24 +157,26 @@ export async function updateMaterial(
         updated_at = NOW()
       WHERE id = ${id}
     `;
-    revalidatePath('/admin/materials');
-    revalidatePath('/materials');
+    revalidatePath("/admin/materials");
+    revalidatePath("/materials");
     return { success: true };
   } catch (error) {
-    console.error('Failed to update material:', error);
-    return { success: false, error: 'Error actualitzant el material' };
+    console.error("Failed to update material:", error);
+    return { success: false, error: "Error actualitzant el material" };
   }
 }
 
-export async function deleteMaterial(id: string): Promise<{ success: boolean; error?: string }> {
+export async function deleteMaterial(
+  id: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
     await sql`DELETE FROM materials WHERE id = ${id}`;
-    revalidatePath('/admin/materials');
-    revalidatePath('/materials');
+    revalidatePath("/admin/materials");
+    revalidatePath("/materials");
     return { success: true };
   } catch (error) {
-    console.error('Failed to delete material:', error);
-    return { success: false, error: 'Error eliminant el material' };
+    console.error("Failed to delete material:", error);
+    return { success: false, error: "Error eliminant el material" };
   }
 }
 
@@ -187,7 +191,7 @@ export async function getAllMaterials(): Promise<Material[]> {
     `;
     return materials as unknown as Material[];
   } catch (error) {
-    console.error('Failed to fetch materials:', error);
+    console.error("Failed to fetch materials:", error);
     return [];
   }
 }
@@ -211,12 +215,12 @@ export async function createService(data: {
       VALUES (${data.name}, ${data.description}, ${data.features || []}, ${data.base_price || null}, ${data.display_order || 0}, ${data.slug || null}, ${data.icon || null}, TRUE)
       RETURNING id
     `;
-    revalidatePath('/admin/services');
-    revalidatePath('/serveis');
+    revalidatePath("/admin/services");
+    revalidatePath("/serveis");
     return { success: true, id: result[0].id };
   } catch (error) {
-    console.error('Failed to create service:', error);
-    return { success: false, error: 'Error creant el servei' };
+    console.error("Failed to create service:", error);
+    return { success: false, error: "Error creant el servei" };
   }
 }
 
@@ -231,7 +235,7 @@ export async function updateService(
     slug?: string;
     icon?: string;
     is_active?: boolean;
-  }
+  },
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await sql`
@@ -247,24 +251,26 @@ export async function updateService(
         updated_at = NOW()
       WHERE id = ${id}
     `;
-    revalidatePath('/admin/services');
-    revalidatePath('/serveis');
+    revalidatePath("/admin/services");
+    revalidatePath("/serveis");
     return { success: true };
   } catch (error) {
-    console.error('Failed to update service:', error);
-    return { success: false, error: 'Error actualitzant el servei' };
+    console.error("Failed to update service:", error);
+    return { success: false, error: "Error actualitzant el servei" };
   }
 }
 
-export async function deleteService(id: string): Promise<{ success: boolean; error?: string }> {
+export async function deleteService(
+  id: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
     await sql`DELETE FROM services WHERE id = ${id}`;
-    revalidatePath('/admin/services');
-    revalidatePath('/serveis');
+    revalidatePath("/admin/services");
+    revalidatePath("/serveis");
     return { success: true };
   } catch (error) {
-    console.error('Failed to delete service:', error);
-    return { success: false, error: 'Error eliminant el servei' };
+    console.error("Failed to delete service:", error);
+    return { success: false, error: "Error eliminant el servei" };
   }
 }
 
@@ -277,7 +283,7 @@ export async function getAllServices(): Promise<Service[]> {
     `;
     return services as unknown as Service[];
   } catch (error) {
-    console.error('Failed to fetch services:', error);
+    console.error("Failed to fetch services:", error);
     return [];
   }
 }

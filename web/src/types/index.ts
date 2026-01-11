@@ -36,7 +36,7 @@ export interface ContactThread {
   email: string;
   phone?: string;
   subject: string;
-  status: 'open' | 'replied' | 'closed';
+  status: "open" | "replied" | "closed";
   created_at: Date;
   updated_at: Date;
 }
@@ -44,7 +44,7 @@ export interface ContactThread {
 export interface ContactMessage {
   id: string;
   thread_id: string;
-  sender_type: 'customer' | 'business';
+  sender_type: "customer" | "business";
   sender_email: string;
   message: string;
   email_sent: boolean;
@@ -72,7 +72,7 @@ export interface EmailQueueItem {
   subject: string;
   body_text: string;
   body_html?: string;
-  status: 'pending' | 'sent' | 'failed';
+  status: "pending" | "sent" | "failed";
   attempts: number;
   created_at: Date;
 }
@@ -99,7 +99,7 @@ export interface Invoice {
   number: string;
   issue_date: string;
   due_date?: string;
-  status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+  status: "draft" | "sent" | "paid" | "overdue" | "cancelled";
   subtotal: number;
   tax_rate: number;
   tax_amount: number;

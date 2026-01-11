@@ -1,10 +1,10 @@
-import { getInvoiceById } from '@/app/admin/invoices/actions';
-import nodemailer from 'nodemailer';
+import { getInvoiceById } from "@/app/admin/invoices/actions";
+import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: process.env.SMTP_SECURE === 'true',
+  host: process.env.SMTP_HOST || "smtp.gmail.com",
+  port: parseInt(process.env.SMTP_PORT || "587"),
+  secure: process.env.SMTP_SECURE === "true",
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASSWORD,
@@ -27,10 +27,19 @@ interface EmailOptions {
 }
 
 export async function sendEmail(options: EmailOptions) {
-  const { to, subject, text, html, replyTo, inReplyTo, references, attachments } = options;
+  const {
+    to,
+    subject,
+    text,
+    html,
+    replyTo,
+    inReplyTo,
+    references,
+    attachments,
+  } = options;
   try {
     const mailOptions: any = {
-      from: `"${process.env.BUSINESS_NAME || 'Miquel A. Riudavets Mercadal'}" <${process.env.SMTP_USER}>`,
+      from: `"${process.env.BUSINESS_NAME || "Miquel A. Riudavets Mercadal"}" <${process.env.SMTP_USER}>`,
       to,
       subject,
       text,
@@ -51,15 +60,15 @@ export async function sendEmail(options: EmailOptions) {
 
     const info = await transporter.sendMail(mailOptions);
 
-    console.log('Email sent:', info.messageId);
+    console.log("Email sent:", info.messageId);
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error("Error sending email:", error);
     return { success: false, error };
   }
 }
 
-export async function sendInvoice(invoiceId: string){
+export async function sendInvoice(invoiceId: string) {
   // Get invoice PDF
   const invoicePdfUrl = `http://localhost:3000/api/admin/invoices/${invoiceId}/pdf`;
 
@@ -70,12 +79,12 @@ export async function sendInvoice(invoiceId: string){
   // Get invoice details to find client email
   const invoice = await getInvoiceById(invoiceId);
   if (!invoice || !invoice.client || !invoice.client.email) {
-    return { success: false, error: 'Client email not found' };
+    return { success: false, error: "Client email not found" };
   }
-  
+
   const subject = `Factura #${invoice.number} de Miquel A. Riudavets Mercadal`;
-  const text = 'Hello world';
-  
+  const text = "Hello world";
+
   return sendEmail({
     to: invoice.client.email,
     subject,
@@ -84,11 +93,10 @@ export async function sendInvoice(invoiceId: string){
       {
         filename: `Factura-${invoice.number}.pdf`,
         content: Buffer.from(pdfBuffer),
-        contentType: 'application/pdf',
+        contentType: "application/pdf",
       },
     ],
   });
-
 }
 
 export async function sendContactNotification(contact: {
@@ -100,14 +108,14 @@ export async function sendContactNotification(contact: {
 }) {
   const businessEmail = process.env.BUSINESS_EMAIL;
   const botEmail = process.env.SMTP_USER;
-  
+
   if (!businessEmail) {
-    console.error('BUSINESS_EMAIL not configured');
-    return { success: false, error: 'Business email not configured' };
+    console.error("BUSINESS_EMAIL not configured");
+    return { success: false, error: "Business email not configured" };
   }
 
   // Generate a unique message ID for threading
-  const messageId = `<thread-${contact.threadId}@${process.env.EMAIL_DOMAIN || 'miquelriudavets.com'}>`;
+  const messageId = `<thread-${contact.threadId}@${process.env.EMAIL_DOMAIN || "miquelriudavets.com"}>`;
 
   const subject = `[Consulta #${contact.threadId.slice(0, 8)}] Nova consulta de ${contact.name}`;
   const text = `
@@ -115,14 +123,14 @@ Has rebut una nova consulta a través del formulari de contacte.
 
 Nom: ${contact.name}
 Email: ${contact.email}
-Telèfon: ${contact.phone || 'No proporcionat'}
+Telèfon: ${contact.phone || "No proporcionat"}
 
 Missatge:
 ${contact.message}
 
 ---
 ⚠️ IMPORTANT: Per respondre al client, NO responguis directament a aquest email.
-Accedeix al panell d'administració: ${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/admin/threads/${contact.threadId}
+Accedeix al panell d'administració: ${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/admin/threads/${contact.threadId}
 
 ID de conversa: ${contact.threadId}
   `.trim();
@@ -159,17 +167,17 @@ ID de conversa: ${contact.threadId}
         <span class="label">Email:</span> ${contact.email}
       </div>
       <div class="field">
-        <span class="label">Telèfon:</span> ${contact.phone || 'No proporcionat'}
+        <span class="label">Telèfon:</span> ${contact.phone || "No proporcionat"}
       </div>
       <div class="field">
         <span class="label">Missatge:</span>
-        <div class="message-box">${contact.message.replace(/\n/g, '<br>')}</div>
+        <div class="message-box">${contact.message.replace(/\n/g, "<br>")}</div>
       </div>
       <div class="warning">
         <strong>⚠️ IMPORTANT:</strong> Per respondre al client, accedeix al panell d'administració.<br>
         Les respostes s'enviaran automàticament des del sistema.
         <br><br>
-        <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/admin/threads/${contact.threadId}" class="btn">Respondre al Client</a>
+        <a href="${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/admin/threads/${contact.threadId}" class="btn">Respondre al Client</a>
       </div>
     </div>
     <div class="footer">
@@ -230,7 +238,7 @@ Pintura i Reformes
     </div>
     <div class="content">
       <p>Hola ${options.customerName},</p>
-      <div class="message">${options.replyMessage.replace(/\n/g, '<br>')}</div>
+      <div class="message">${options.replyMessage.replace(/\n/g, "<br>")}</div>
     </div>
     <div class="footer">
       <p>Miquel A. Riudavets Mercadal<br>

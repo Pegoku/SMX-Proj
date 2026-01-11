@@ -18,11 +18,12 @@ const sampleMaterials: Material[] = [
     category: "Pintures",
     brand: "Titan",
     unit: "litre",
-    price: 4.50,
+    price: 4.5,
     stock_quantity: 150,
-    image_url: "https://images.unsplash.com/photo-1562259929-b4e1fd3aef09?auto=format&fit=crop&w=800&q=80",
+    image_url:
+      "https://images.unsplash.com/photo-1562259929-b4e1fd3aef09?auto=format&fit=crop&w=800&q=80",
     is_available: true,
-  }
+  },
 ];
 
 export default async function MaterialsPage() {
@@ -34,9 +35,7 @@ export default async function MaterialsPage() {
       {/* Header */}
       <section className="bg-[var(--primary)] text-white py-12">
         <div className="container mx-auto px-4">
-          <h1 className="text-2xl md:text-3xl font-bold">
-            Materials
-          </h1>
+          <h1 className="text-2xl md:text-3xl font-bold">Materials</h1>
           <p className="text-white/80 mt-2">
             Pintures, eines i materials disponibles
           </p>
@@ -58,10 +57,13 @@ export default async function MaterialsPage() {
               Informació
             </h2>
             <p className="text-gray-600 text-sm mb-4">
-              Els preus poden variar segons disponibilitat. 
-              Contacta amb nosaltres per confirmar preus i estoc.
+              Els preus poden variar segons disponibilitat. Contacta amb
+              nosaltres per confirmar preus i estoc.
             </p>
-            <Link href="/#contacte" className="text-[var(--primary)] hover:underline text-sm">
+            <Link
+              href="/#contacte"
+              className="text-[var(--primary)] hover:underline text-sm"
+            >
               Contactar →
             </Link>
           </div>

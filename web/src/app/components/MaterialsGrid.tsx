@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 interface Material {
   id: string;
@@ -20,15 +20,17 @@ interface MaterialsGridProps {
 }
 
 export default function MaterialsGrid({ materials }: MaterialsGridProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const categories = ['all', ...new Set(materials.map(m => m.category))];
+  const categories = ["all", ...new Set(materials.map((m) => m.category))];
 
   const filteredMaterials = materials.filter((material) => {
-    const matchesCategory = selectedCategory === 'all' || material.category === selectedCategory;
-    const matchesSearch = material.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         material.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" || material.category === selectedCategory;
+    const matchesSearch =
+      material.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      material.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -57,11 +59,11 @@ export default function MaterialsGrid({ materials }: MaterialsGridProps) {
             onClick={() => setSelectedCategory(category)}
             className={`px-3 py-1 rounded text-sm transition-colors ${
               selectedCategory === category
-                ? 'bg-[var(--primary)] text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? "bg-[var(--primary)] text-white"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            {category === 'all' ? 'Tots' : category}
+            {category === "all" ? "Tots" : category}
           </button>
         ))}
       </div>
@@ -83,24 +85,40 @@ export default function MaterialsGrid({ materials }: MaterialsGridProps) {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center">
-                  <svg className="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  <svg
+                    className="w-12 h-12 text-gray-300"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
                   </svg>
                 </div>
               )}
             </div>
             <div className="p-4">
               <div className="flex justify-between items-start mb-2">
-                <h3 className="font-semibold text-gray-800 text-sm">{material.name}</h3>
-                <span className={`text-xs px-2 py-0.5 rounded ${
-                  material.is_available 
-                    ? 'bg-green-100 text-green-700' 
-                    : 'bg-red-100 text-red-700'
-                }`}>
-                  {material.is_available ? 'Disponible' : 'Esgotat'}
+                <h3 className="font-semibold text-gray-800 text-sm">
+                  {material.name}
+                </h3>
+                <span
+                  className={`text-xs px-2 py-0.5 rounded ${
+                    material.is_available
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {material.is_available ? "Disponible" : "Esgotat"}
                 </span>
               </div>
-              <p className="text-gray-600 text-xs mb-2">{material.description}</p>
+              <p className="text-gray-600 text-xs mb-2">
+                {material.description}
+              </p>
               {material.brand && (
                 <p className="text-xs text-gray-400 mb-2">{material.brand}</p>
               )}

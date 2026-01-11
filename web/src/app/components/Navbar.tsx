@@ -1,18 +1,18 @@
-'use client'
+"use client";
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { useState } from 'react';
+import Link from "next/link";
+import Image from "next/image";
+import { useState } from "react";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navLinks = [
-    { href: '/', label: 'Inici' },
-    { href: '/serveis', label: 'Serveis' },
-    { href: '/portfolio', label: 'Treballs' },
-    { href: '/materials', label: 'Materials' },
-    { href: '/#contacte', label: 'Contacte' },
+    { href: "/", label: "Inici" },
+    { href: "/serveis", label: "Serveis" },
+    { href: "/portfolio", label: "Treballs" },
+    { href: "/materials", label: "Materials" },
+    { href: "/#contacte", label: "Contacte" },
   ];
 
   return (
@@ -21,15 +21,17 @@ export default function Navbar() {
         <div className="flex justify-between items-center py-3">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
-            <Image 
-              src="/logo-color.png" 
-              alt="Miquel A. Riudavets" 
-              width={50} 
+            <Image
+              src="/logo-color.png"
+              alt="Miquel A. Riudavets"
+              width={50}
               height={84}
               className="h-14 w-auto"
             />
             <div className="hidden sm:block">
-              <h1 className="text-base font-semibold text-gray-800">Miquel A. Riudavets</h1>
+              <h1 className="text-base font-semibold text-gray-800">
+                Miquel A. Riudavets
+              </h1>
               <p className="text-xs text-gray-500">Pintura i Reformes</p>
             </div>
           </Link>

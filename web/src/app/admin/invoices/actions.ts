@@ -1,4 +1,4 @@
-'use server';
+"use server";
 
 import sql from "@/lib/db";
 import { revalidatePath } from "next/cache";
@@ -17,7 +17,7 @@ export async function getAllClients(): Promise<Client[]> {
     `;
     return clients as unknown as Client[];
   } catch (error) {
-    console.error('Failed to fetch clients:', error);
+    console.error("Failed to fetch clients:", error);
     return [];
   }
 }
@@ -31,7 +31,7 @@ export async function getClientById(id: string): Promise<Client | null> {
     `;
     return clients.length > 0 ? (clients[0] as unknown as Client) : null;
   } catch (error) {
-    console.error('Failed to fetch client:', error);
+    console.error("Failed to fetch client:", error);
     return null;
   }
 }
@@ -55,11 +55,11 @@ export async function createClient(data: {
               ${data.postal_code || null}, ${data.notes || null})
       RETURNING id, name, nif, email, phone, address_line1, address_line2, city, postal_code, notes, created_at, updated_at
     `;
-    revalidatePath('/admin/invoices');
+    revalidatePath("/admin/invoices");
     return { success: true, client: result[0] as unknown as Client };
   } catch (error) {
-    console.error('Failed to create client:', error);
-    return { success: false, error: 'Error creant el client' };
+    console.error("Failed to create client:", error);
+    return { success: false, error: "Error creant el client" };
   }
 }
 
@@ -75,7 +75,7 @@ export async function updateClient(
     city?: string;
     postal_code?: string;
     notes?: string;
-  }
+  },
 ): Promise<{ success: boolean; error?: string; client?: Client }> {
   try {
     const result = await sql`
@@ -93,22 +93,27 @@ export async function updateClient(
       WHERE id = ${id}
       RETURNING id, name, nif, email, phone, address_line1, address_line2, city, postal_code, notes, created_at, updated_at
     `;
-    revalidatePath('/admin/invoices');
+    revalidatePath("/admin/invoices");
     return { success: true, client: result[0] as unknown as Client };
   } catch (error) {
-    console.error('Failed to update client:', error);
-    return { success: false, error: 'Error actualitzant el client' };
+    console.error("Failed to update client:", error);
+    return { success: false, error: "Error actualitzant el client" };
   }
 }
 
-export async function deleteClient(id: string): Promise<{ success: boolean; error?: string }> {
+export async function deleteClient(
+  id: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
     await sql`DELETE FROM clients WHERE id = ${id}`;
-    revalidatePath('/admin/invoices');
+    revalidatePath("/admin/invoices");
     return { success: true };
   } catch (error) {
-    console.error('Failed to delete client:', error);
-    return { success: false, error: 'Error eliminant el client (pot tenir factures associades)' };
+    console.error("Failed to delete client:", error);
+    return {
+      success: false,
+      error: "Error eliminant el client (pot tenir factures associades)",
+    };
   }
 }
 
@@ -126,7 +131,7 @@ export async function getAllInvoiceProducts(): Promise<InvoiceProduct[]> {
     `;
     return products as unknown as InvoiceProduct[];
   } catch (error) {
-    console.error('Failed to fetch invoice products:', error);
+    console.error("Failed to fetch invoice products:", error);
     return [];
   }
 }
@@ -144,11 +149,11 @@ export async function createInvoiceProduct(data: {
       VALUES (${data.name}, ${data.description || null}, ${data.default_price}, ${data.default_unit}, ${data.category || null})
       RETURNING id, name, description, default_price, default_unit, category, is_active, created_at, updated_at
     `;
-    revalidatePath('/admin/invoices');
+    revalidatePath("/admin/invoices");
     return { success: true, product: result[0] as unknown as InvoiceProduct };
   } catch (error) {
-    console.error('Failed to create invoice product:', error);
-    return { success: false, error: 'Error creant el producte' };
+    console.error("Failed to create invoice product:", error);
+    return { success: false, error: "Error creant el producte" };
   }
 }
 
@@ -161,7 +166,7 @@ export async function updateInvoiceProduct(
     default_unit?: string;
     category?: string;
     is_active?: boolean;
-  }
+  },
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await sql`
@@ -175,22 +180,24 @@ export async function updateInvoiceProduct(
         updated_at = NOW()
       WHERE id = ${id}
     `;
-    revalidatePath('/admin/invoices');
+    revalidatePath("/admin/invoices");
     return { success: true };
   } catch (error) {
-    console.error('Failed to update invoice product:', error);
-    return { success: false, error: 'Error actualitzant el producte' };
+    console.error("Failed to update invoice product:", error);
+    return { success: false, error: "Error actualitzant el producte" };
   }
 }
 
-export async function deleteInvoiceProduct(id: string): Promise<{ success: boolean; error?: string }> {
+export async function deleteInvoiceProduct(
+  id: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
     await sql`UPDATE invoice_products SET is_active = FALSE WHERE id = ${id}`;
-    revalidatePath('/admin/invoices');
+    revalidatePath("/admin/invoices");
     return { success: true };
   } catch (error) {
-    console.error('Failed to delete invoice product:', error);
-    return { success: false, error: 'Error eliminant el producte' };
+    console.error("Failed to delete invoice product:", error);
+    return { success: false, error: "Error eliminant el producte" };
   }
 }
 
@@ -206,7 +213,7 @@ export async function generateInvoiceNumber(): Promise<string> {
     WHERE EXTRACT(YEAR FROM created_at) = ${year}
   `;
   const count = parseInt(result[0].count as string) + 1;
-  return `${year}-${count.toString().padStart(3, '0')}`;
+  return `${year}-${count.toString().padStart(3, "0")}`;
 }
 
 export async function getAllInvoices(): Promise<Invoice[]> {
@@ -223,7 +230,7 @@ export async function getAllInvoices(): Promise<Invoice[]> {
       LEFT JOIN clients c ON i.client_id = c.id
       ORDER BY i.created_at DESC
     `;
-    return invoices.map(inv => ({
+    return invoices.map((inv) => ({
       ...inv,
       client: {
         id: inv.client_id,
@@ -234,10 +241,10 @@ export async function getAllInvoices(): Promise<Invoice[]> {
         address_line1: inv.client_address,
         city: inv.client_city,
         postal_code: inv.client_postal_code,
-      }
+      },
     })) as unknown as Invoice[];
   } catch (error) {
-    console.error('Failed to fetch invoices:', error);
+    console.error("Failed to fetch invoices:", error);
     return [];
   }
 }
@@ -256,9 +263,9 @@ export async function getInvoiceById(id: string): Promise<Invoice | null> {
       left join clients c on i.client_id = c.id
       where i.id = ${id}
     `;
-    
+
     if (invoices.length === 0) return null;
-    
+
     const items = await sql`
       select id, invoice_id, service_id, description, quantity, unit, unit_price, line_total
       from invoice_items
@@ -266,7 +273,7 @@ export async function getInvoiceById(id: string): Promise<Invoice | null> {
       order by id asc
     `;
     // console.log('fetched items for invoice', items, id);
-    
+
     const inv = invoices[0];
     return {
       ...inv,
@@ -284,24 +291,24 @@ export async function getInvoiceById(id: string): Promise<Invoice | null> {
       items: items as unknown as InvoiceItem[],
     } as unknown as Invoice;
   } catch (error) {
-    console.error('failed to fetch invoice:', error);
+    console.error("failed to fetch invoice:", error);
     return null;
   }
 }
 
 export async function getInvoiceItemsById(id: string): Promise<InvoiceItem[]> {
-    try{
-        const items = await sql`
+  try {
+    const items = await sql`
         select id, invoice_id, service_id, description, quantity, unit, unit_price, line_total
         from invoice_items
         where invoice_id = ${id}
         order by id asc
       `;
-      return items as unknown as InvoiceItem[];
-    } catch (error) {
-        console.error('failed to fetch invoice items:', error);
-        return [];
-    }
+    return items as unknown as InvoiceItem[];
+  } catch (error) {
+    console.error("failed to fetch invoice items:", error);
+    return [];
+  }
 }
 
 export async function createInvoice(data: {
@@ -323,23 +330,26 @@ export async function createInvoice(data: {
     const invoiceNumber = await generateInvoiceNumber();
     const taxRate = data.tax_rate ?? 21;
     const laborTotal = data.labor_total ?? 0;
-    
+
     // Calculate totals
-    const itemsSubtotal = data.items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
+    const itemsSubtotal = data.items.reduce(
+      (sum, item) => sum + item.quantity * item.unit_price,
+      0,
+    );
     const subtotal = itemsSubtotal + laborTotal;
     const taxAmount = subtotal * (taxRate / 100);
     const total = subtotal + taxAmount;
-    
+
     // Create invoice
     const result = await sql`
       INSERT INTO invoices (client_id, number, issue_date, due_date, status, subtotal, tax_rate, tax_amount, total, notes, labor_total)
       VALUES (${data.client_id}, ${invoiceNumber}, ${data.issue_date}, ${data.due_date || null}, 
-              ${data.status || 'draft'}, ${subtotal}, ${taxRate}, ${taxAmount}, ${total}, ${data.notes || null}, ${laborTotal})
+              ${data.status || "draft"}, ${subtotal}, ${taxRate}, ${taxAmount}, ${total}, ${data.notes || null}, ${laborTotal})
       RETURNING id
     `;
-    
+
     const invoiceId = result[0].id;
-    
+
     // Create invoice items
     for (const item of data.items) {
       const lineTotal = item.quantity * item.unit_price;
@@ -348,12 +358,12 @@ export async function createInvoice(data: {
         VALUES (${invoiceId}, ${item.description}, ${item.quantity}, ${item.unit}, ${item.unit_price}, ${lineTotal})
       `;
     }
-    
-    revalidatePath('/admin/invoices');
+
+    revalidatePath("/admin/invoices");
     return { success: true, id: invoiceId as string };
   } catch (error) {
-    console.error('Failed to create invoice:', error);
-    return { success: false, error: 'Error creant la factura' };
+    console.error("Failed to create invoice:", error);
+    return { success: false, error: "Error creant la factura" };
   }
 }
 
@@ -374,26 +384,29 @@ export async function updateInvoice(
       unit: string;
       unit_price: number;
     }[];
-  }
+  },
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const taxRate = data.tax_rate ?? 21;
     const laborTotal = data.labor_total ?? 0;
-    
+
     // Calculate totals if items provided
     let subtotal = 0;
     let taxAmount = 0;
     let total = 0;
-    
+
     if (data.items) {
-      const itemsSubtotal = data.items.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
+      const itemsSubtotal = data.items.reduce(
+        (sum, item) => sum + item.quantity * item.unit_price,
+        0,
+      );
       subtotal = itemsSubtotal + laborTotal;
       taxAmount = subtotal * (taxRate / 100);
       total = subtotal + taxAmount;
-      
+
       // Delete existing items and recreate
       await sql`DELETE FROM invoice_items WHERE invoice_id = ${id}`;
-      
+
       for (const item of data.items) {
         const lineTotal = item.quantity * item.unit_price;
         await sql`
@@ -417,62 +430,66 @@ export async function updateInvoice(
         updated_at = NOW()
       WHERE id = ${id}
     `;
-    
-    revalidatePath('/admin/invoices');
+
+    revalidatePath("/admin/invoices");
     revalidatePath(`/admin/invoices/${id}`);
     return { success: true };
   } catch (error) {
-    console.error('Failed to update invoice:', error);
-    return { success: false, error: 'Error actualitzant la factura' };
+    console.error("Failed to update invoice:", error);
+    return { success: false, error: "Error actualitzant la factura" };
   }
 }
 
-export async function deleteInvoice(id: string): Promise<{ success: boolean; error?: string }> {
+export async function deleteInvoice(
+  id: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
     await sql`DELETE FROM invoices WHERE id = ${id}`;
-    revalidatePath('/admin/invoices');
+    revalidatePath("/admin/invoices");
     return { success: true };
   } catch (error) {
-    console.error('Failed to delete invoice:', error);
-    return { success: false, error: 'Error eliminant la factura' };
+    console.error("Failed to delete invoice:", error);
+    return { success: false, error: "Error eliminant la factura" };
   }
 }
 
 export async function updateInvoiceStatus(
   id: string,
-  status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
+  status: "draft" | "sent" | "paid" | "overdue" | "cancelled",
 ): Promise<{ success: boolean; error?: string }> {
   try {
     await sql`
       UPDATE invoices SET status = ${status}, updated_at = NOW()
       WHERE id = ${id}
     `;
-    revalidatePath('/admin/invoices');
+    revalidatePath("/admin/invoices");
     return { success: true };
   } catch (error) {
-    console.error('Failed to update invoice status:', error);
-    return { success: false, error: 'Error actualitzant l\'estat' };
+    console.error("Failed to update invoice status:", error);
+    return { success: false, error: "Error actualitzant l'estat" };
   }
 }
 
-export async function sendInvoiceEmail(invoiceId: string): Promise<{ success: boolean; error?: string }> {
+export async function sendInvoiceEmail(
+  invoiceId: string,
+): Promise<{ success: boolean; error?: string }> {
   try {
     // Dynamic import to avoid client-side bundling issues
-    const { sendInvoice } = await import('@/lib/email');
+    const { sendInvoice } = await import("@/lib/email");
     const result = await sendInvoice(invoiceId);
-    
+
     if (result.success) {
       // Update invoice status to 'sent'
       await sql`
         UPDATE invoices SET status = 'sent', updated_at = NOW()
         WHERE id = ${invoiceId}
       `;
-      revalidatePath('/admin/invoices');
+      revalidatePath("/admin/invoices");
     }
-    
+
     return result;
   } catch (error) {
-    console.error('Failed to send invoice email:', error);
-    return { success: false, error: 'Error enviant la factura per email' };
+    console.error("Failed to send invoice email:", error);
+    return { success: false, error: "Error enviant la factura per email" };
   }
 }

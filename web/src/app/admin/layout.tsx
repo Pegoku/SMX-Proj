@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function AdminLayout({
   children,
@@ -16,40 +16,40 @@ export default function AdminLayout({
                 Panel d&apos;Administració
               </Link>
               <nav className="hidden md:flex items-center gap-4">
-                <Link 
-                  href="/admin/threads" 
+                <Link
+                  href="/admin/threads"
                   className="text-gray-600 hover:text-orange-600 text-sm font-medium"
                 >
                   Consultes
                 </Link>
-                <Link 
-                  href="/admin/portfolio" 
+                <Link
+                  href="/admin/portfolio"
                   className="text-gray-600 hover:text-orange-600 text-sm font-medium"
                 >
                   Treballs
                 </Link>
-                <Link 
-                  href="/admin/materials" 
+                <Link
+                  href="/admin/materials"
                   className="text-gray-600 hover:text-orange-600 text-sm font-medium"
                 >
                   Materials
                 </Link>
-                <Link 
-                  href="/admin/services" 
+                <Link
+                  href="/admin/services"
                   className="text-gray-600 hover:text-orange-600 text-sm font-medium"
                 >
                   Serveis
                 </Link>
-                <Link 
-                  href="/admin/invoices" 
+                <Link
+                  href="/admin/invoices"
                   className="text-gray-600 hover:text-orange-600 text-sm font-medium"
                 >
                   Factures
                 </Link>
               </nav>
             </div>
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="text-gray-500 hover:text-gray-700 text-sm"
             >
               ← Tornar al web
@@ -60,32 +60,32 @@ export default function AdminLayout({
 
       {/* Mobile Navigation */}
       <nav className="md:hidden bg-white border-b px-4 py-2 flex gap-4 overflow-x-auto">
-        <Link 
-          href="/admin/threads" 
+        <Link
+          href="/admin/threads"
           className="text-gray-600 hover:text-orange-600 text-sm whitespace-nowrap"
         >
           Consultes
         </Link>
-        <Link 
-          href="/admin/portfolio" 
+        <Link
+          href="/admin/portfolio"
           className="text-gray-600 hover:text-orange-600 text-sm whitespace-nowrap"
         >
           Treballs
         </Link>
-        <Link 
-          href="/admin/materials" 
+        <Link
+          href="/admin/materials"
           className="text-gray-600 hover:text-orange-600 text-sm whitespace-nowrap"
         >
           Materials
         </Link>
-        <Link 
-          href="/admin/services" 
+        <Link
+          href="/admin/services"
           className="text-gray-600 hover:text-orange-600 text-sm whitespace-nowrap"
         >
           Serveis
         </Link>
-        <Link 
-          href="/admin/invoices" 
+        <Link
+          href="/admin/invoices"
           className="text-gray-600 hover:text-orange-600 text-sm whitespace-nowrap"
         >
           Factures

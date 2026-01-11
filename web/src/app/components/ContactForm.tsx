@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useActionState, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -20,7 +20,10 @@ const subjectOptions = [
 ];
 
 export default function ContactForm() {
-  const [state, formAction, isPending] = useActionState(submitContactForm, initialState);
+  const [state, formAction, isPending] = useActionState(
+    submitContactForm,
+    initialState,
+  );
   const searchParams = useSearchParams();
   const [selectedSubject, setSelectedSubject] = useState("");
 
@@ -28,8 +31,8 @@ export default function ContactForm() {
     const servei = searchParams.get("servei");
     if (servei) {
       // Find matching option
-      const match = subjectOptions.find(opt => 
-        opt.value.toLowerCase() === servei.toLowerCase()
+      const match = subjectOptions.find(
+        (opt) => opt.value.toLowerCase() === servei.toLowerCase(),
       );
       if (match) {
         setSelectedSubject(match.value);
@@ -38,9 +41,14 @@ export default function ContactForm() {
   }, [searchParams]);
 
   return (
-    <form action={formAction} className="bg-white border border-gray-200 rounded-lg p-6">
+    <form
+      action={formAction}
+      className="bg-white border border-gray-200 rounded-lg p-6"
+    >
       {state.message && (
-        <div className={`p-3 mb-4 rounded text-sm ${state.success ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+        <div
+          className={`p-3 mb-4 rounded text-sm ${state.success ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}
+        >
           {state.message}
         </div>
       )}
@@ -122,12 +130,7 @@ export default function ContactForm() {
 
       <div className="mb-4">
         <label className="flex items-start space-x-2 text-sm">
-          <input
-            type="checkbox"
-            name="privacy"
-            required
-            className="mt-0.5"
-          />
+          <input type="checkbox" name="privacy" required className="mt-0.5" />
           <span className="text-gray-600">
             Accepto la política de privacitat
           </span>
@@ -139,7 +142,7 @@ export default function ContactForm() {
         disabled={isPending}
         className="btn-primary w-full disabled:opacity-50"
       >
-        {isPending ? 'Enviant...' : 'Enviar'}
+        {isPending ? "Enviant..." : "Enviar"}
       </button>
     </form>
   );

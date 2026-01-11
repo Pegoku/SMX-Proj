@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\""
   },
   "dependencies": {
     "@types/nodemailer": "^7.0.4",
@@ -14,6 +15,7 @@
     "next": "16.0.1",
     "nodemailer": "^7.0.11",
     "postgres": "^3.4.7",
+    "prettier": "^3.7.4",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },

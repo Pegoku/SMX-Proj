@@ -3,14 +3,14 @@
 :root {
   --background: #ffffff;
   --foreground: #333333;
-  
+
   /* Brand Colors - Clean and professional */
-  --primary: #2c5282;        /* Deep blue - trustworthy */
+  --primary: #2c5282; /* Deep blue - trustworthy */
   --primary-light: #4a7ab5;
   --primary-dark: #1e3a5f;
-  --secondary: #c05621;      /* Warm orange - craftsmanship */
+  --secondary: #c05621; /* Warm orange - craftsmanship */
   --secondary-light: #ed8936;
-  --accent: #718096;         /* Neutral gray */
+  --accent: #718096; /* Neutral gray */
   --warm-white: #fafafa;
   --warm-gray: #f0f0f0;
 }

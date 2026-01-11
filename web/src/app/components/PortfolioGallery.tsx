@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface PortfolioItem {
   id: string;
@@ -20,28 +20,30 @@ interface PortfolioGalleryProps {
 export default function PortfolioGallery({ items }: PortfolioGalleryProps) {
   const [selectedItem, setSelectedItem] = useState<PortfolioItem | null>(null);
   const [showBefore, setShowBefore] = useState(false);
-  const [filter, setFilter] = useState<string>('all');
+  const [filter, setFilter] = useState<string>("all");
   const searchParams = useSearchParams();
 
-  const categories = ['all', ...new Set(items.map(item => item.category).filter(Boolean))];
+  const categories = [
+    "all",
+    ...new Set(items.map((item) => item.category).filter(Boolean)),
+  ];
 
   useEffect(() => {
-    const urlFilter = searchParams.get('filter');
+    const urlFilter = searchParams.get("filter");
     if (urlFilter) {
       // Find matching category (case insensitive)
       const decodedFilter = decodeURIComponent(urlFilter);
-      const match = categories.find(cat => 
-        cat && cat.toLowerCase() === decodedFilter.toLowerCase()
+      const match = categories.find(
+        (cat) => cat && cat.toLowerCase() === decodedFilter.toLowerCase(),
       );
       if (match) {
         setFilter(match);
       }
     }
   }, [searchParams]);
-  
-  const filteredItems = filter === 'all' 
-    ? items 
-    : items.filter(item => item.category === filter);
+
+  const filteredItems =
+    filter === "all" ? items : items.filter((item) => item.category === filter);
 
   return (
     <>
@@ -53,11 +55,11 @@ export default function PortfolioGallery({ items }: PortfolioGalleryProps) {
             onClick={() => setFilter(category as string)}
             className={`px-3 py-1 rounded text-sm transition-colors ${
               filter === category
-                ? 'bg-[var(--primary)] text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? "bg-[var(--primary)] text-white"
+                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
             }`}
           >
-            {category === 'all' ? 'Tots' : category}
+            {category === "all" ? "Tots" : category}
           </button>
         ))}
       </div>
@@ -93,7 +95,9 @@ export default function PortfolioGallery({ items }: PortfolioGalleryProps) {
       {/* Empty State */}
       {filteredItems.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-500">No hi ha projectes en aquesta categoria.</p>
+          <p className="text-gray-500">
+            No hi ha projectes en aquesta categoria.
+          </p>
         </div>
       )}
 
@@ -112,7 +116,9 @@ export default function PortfolioGallery({ items }: PortfolioGalleryProps) {
           >
             <div className="p-6">
               <div className="flex justify-between items-start mb-4">
-                <h2 className="text-xl font-semibold text-gray-800">{selectedItem.title}</h2>
+                <h2 className="text-xl font-semibold text-gray-800">
+                  {selectedItem.title}
+                </h2>
                 <button
                   onClick={() => {
                     setSelectedItem(null);
@@ -120,44 +126,69 @@ export default function PortfolioGallery({ items }: PortfolioGalleryProps) {
                   }}
                   className="text-gray-400 hover:text-gray-600"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
-              
+
               <div className="h-64 bg-gray-100 rounded mb-4 overflow-hidden">
                 <img
-                  src={showBefore ? selectedItem.before_image_url : (selectedItem.after_image_url || selectedItem.image_url)}
-                  alt={showBefore ? `${selectedItem.title} - Abans` : `${selectedItem.title} - Després`}
+                  src={
+                    showBefore
+                      ? selectedItem.before_image_url
+                      : selectedItem.after_image_url || selectedItem.image_url
+                  }
+                  alt={
+                    showBefore
+                      ? `${selectedItem.title} - Abans`
+                      : `${selectedItem.title} - Després`
+                  }
                   className="w-full h-full object-cover"
                 />
               </div>
 
-              {selectedItem.before_image_url && selectedItem.after_image_url && (
-                <div className="flex gap-2 mb-4">
-                  <button
-                    onClick={() => setShowBefore(true)}
-                    className={`px-3 py-1 rounded text-sm ${
-                      showBefore ? 'bg-[var(--primary)] text-white' : 'bg-gray-100 text-gray-600'
-                    }`}
-                  >
-                    Abans
-                  </button>
-                  <button
-                    onClick={() => setShowBefore(false)}
-                    className={`px-3 py-1 rounded text-sm ${
-                      !showBefore ? 'bg-[var(--primary)] text-white' : 'bg-gray-100 text-gray-600'
-                    }`}
-                  >
-                    Després
-                  </button>
-                </div>
-              )}
+              {selectedItem.before_image_url &&
+                selectedItem.after_image_url && (
+                  <div className="flex gap-2 mb-4">
+                    <button
+                      onClick={() => setShowBefore(true)}
+                      className={`px-3 py-1 rounded text-sm ${
+                        showBefore
+                          ? "bg-[var(--primary)] text-white"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      Abans
+                    </button>
+                    <button
+                      onClick={() => setShowBefore(false)}
+                      className={`px-3 py-1 rounded text-sm ${
+                        !showBefore
+                          ? "bg-[var(--primary)] text-white"
+                          : "bg-gray-100 text-gray-600"
+                      }`}
+                    >
+                      Després
+                    </button>
+                  </div>
+                )}
 
               <p className="text-gray-600">{selectedItem.description}</p>
               {selectedItem.category && (
-                <p className="text-sm text-[var(--secondary)] mt-2">{selectedItem.category}</p>
+                <p className="text-sm text-[var(--secondary)] mt-2">
+                  {selectedItem.category}
+                </p>
               )}
             </div>
           </div>

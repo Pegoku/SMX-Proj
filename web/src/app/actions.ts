@@ -1,8 +1,16 @@
-'use server'
+"use server";
 
 import sql from "@/lib/db";
-import { sendContactNotification, sendConfirmationToCustomer } from "@/lib/email";
-import type { Material, MaterialCategory, PortfolioItem, Service } from "@/types";
+import {
+  sendContactNotification,
+  sendConfirmationToCustomer,
+} from "@/lib/email";
+import type {
+  Material,
+  MaterialCategory,
+  PortfolioItem,
+  Service,
+} from "@/types";
 
 interface ContactFormState {
   message: string;
@@ -11,7 +19,7 @@ interface ContactFormState {
 
 export async function submitContactForm(
   prevState: ContactFormState,
-  formData: FormData
+  formData: FormData,
 ): Promise<ContactFormState> {
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
@@ -20,13 +28,19 @@ export async function submitContactForm(
   const message = formData.get("message") as string;
 
   if (!name || !email || !subject || !message) {
-    return { message: "Si us plau, omple tots els camps obligatoris.", success: false };
+    return {
+      message: "Si us plau, omple tots els camps obligatoris.",
+      success: false,
+    };
   }
 
   // Validate email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
-    return { message: "Si us plau, introdueix un correu electrònic vàlid.", success: false };
+    return {
+      message: "Si us plau, introdueix un correu electrònic vàlid.",
+      success: false,
+    };
   }
 
   try {
@@ -79,7 +93,8 @@ export async function submitContactForm(
   } catch (error) {
     console.error("Failed to submit contact form:", error);
     return {
-      message: "Hi ha hagut un error en enviar el missatge. Si us plau, torna-ho a provar.",
+      message:
+        "Hi ha hagut un error en enviar el missatge. Si us plau, torna-ho a provar.",
       success: false,
     };
   }
@@ -110,7 +125,7 @@ export async function getPortfolioItems(): Promise<PortfolioItem[]> {
 
 export async function getMaterials(category?: string): Promise<Material[]> {
   try {
-    if (category && category !== 'all') {
+    if (category && category !== "all") {
       const materials = await sql`
         SELECT 
           id, 
@@ -129,7 +144,7 @@ export async function getMaterials(category?: string): Promise<Material[]> {
       `;
       return materials as unknown as Material[];
     }
-    
+
     const materials = await sql`
       SELECT 
         id, 
@@ -185,7 +200,7 @@ export async function getServices(): Promise<Service[]> {
 export async function replyToThread(
   threadId: string,
   message: string,
-  businessEmail: string
+  businessEmail: string,
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // Get thread info
@@ -196,7 +211,7 @@ export async function replyToThread(
     `;
 
     if (threads.length === 0) {
-      return { success: false, error: 'Thread not found' };
+      return { success: false, error: "Thread not found" };
     }
 
     const thread = threads[0];
@@ -215,7 +230,7 @@ export async function replyToThread(
     `;
 
     // Send email through bot
-    const { sendReplyToCustomer } = await import('@/lib/email');
+    const { sendReplyToCustomer } = await import("@/lib/email");
     const emailResult = await sendReplyToCustomer({
       customerEmail: thread.email,
       customerName: thread.name,
@@ -236,13 +251,13 @@ export async function replyToThread(
     return { success: true };
   } catch (error) {
     console.error("Failed to reply to thread:", error);
-    return { success: false, error: 'Failed to send reply' };
+    return { success: false, error: "Failed to send reply" };
   }
 }
 
 export async function getThreads(status?: string): Promise<any[]> {
   try {
-    if (status && status !== 'all') {
+    if (status && status !== "all") {
       const threads = await sql`
         SELECT t.*, 
           (SELECT COUNT(*) FROM contact_messages_v2 WHERE thread_id = t.id) as message_count,

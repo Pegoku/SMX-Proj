@@ -150,7 +150,7 @@ export default function InvoiceEditor({
   const updateItem = (
     index: number,
     field: keyof InvoiceItemForm,
-    value: string | number
+    value: string | number,
   ) => {
     const newItems = [...formData.items];
     newItems[index] = { ...newItems[index], [field]: value };
@@ -175,7 +175,7 @@ export default function InvoiceEditor({
   const calculateSubtotal = (): number => {
     const itemsTotal = formData.items.reduce(
       (sum, item) => sum + Number(item.quantity) * Number(item.unit_price),
-      0
+      0,
     );
     return itemsTotal + Number(formData.labor_total || 0);
   };
@@ -252,7 +252,7 @@ export default function InvoiceEditor({
     try {
       const result = await updateInvoiceStatus(
         id,
-        status as "draft" | "sent" | "paid" | "overdue" | "cancelled"
+        status as "draft" | "sent" | "paid" | "overdue" | "cancelled",
       );
       if (!result.success) {
         setError(result.error || "Error actualitzant estat");
@@ -367,7 +367,7 @@ export default function InvoiceEditor({
   const filteredInvoices = invoices.filter(
     (inv) =>
       inv.number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      inv.client?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      inv.client?.name?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const selectedClient = clients.find((c) => c.id === formData.client_id);
@@ -437,7 +437,7 @@ export default function InvoiceEditor({
                     onClick={() => {
                       if (formData.client_id) {
                         const client = clients.find(
-                          (c) => c.id === formData.client_id
+                          (c) => c.id === formData.client_id,
                         );
                         if (client) {
                           setNewClientForm({
@@ -631,7 +631,7 @@ export default function InvoiceEditor({
                               updateItem(
                                 index,
                                 "quantity",
-                                parseFloat(e.target.value) || 0
+                                parseFloat(e.target.value) || 0,
                               )
                             }
                             className="w-full p-1 border rounded focus:ring-1 focus:ring-green-500 text-center"
@@ -647,7 +647,7 @@ export default function InvoiceEditor({
                               updateItem(
                                 index,
                                 "unit_price",
-                                parseFloat(e.target.value) || 0
+                                parseFloat(e.target.value) || 0,
                               )
                             }
                             className="w-full p-1 border rounded focus:ring-1 focus:ring-green-500 text-right"
@@ -774,8 +774,8 @@ export default function InvoiceEditor({
                 {loading
                   ? "Guardant..."
                   : editingInvoice
-                  ? "Actualitzar"
-                  : "Crear Factura"}
+                    ? "Actualitzar"
+                    : "Crear Factura"}
               </button>
             </div>
           </form>
@@ -844,7 +844,7 @@ export default function InvoiceEditor({
                             <option key={value} value={value}>
                               {label}
                             </option>
-                          )
+                          ),
                         )}
                       </select>
                     </td>
@@ -1050,29 +1050,33 @@ export default function InvoiceEditor({
               </div>
               <div className="flex justify-end gap-3 pt-4">
                 {showClientModal === "new" ? null : (
-                  <button className="px-4 py-2 text-white rounded-lg bg-red-600 hover:bg-red-700"
+                  <button
+                    className="px-4 py-2 text-white rounded-lg bg-red-600 hover:bg-red-700"
                     type="button"
                     onClick={async () => {
-                      if (!confirm("Estàs segur que vols eliminar aquest client?")) return;
-                      setLoading(true); 
-                        try {
-                            const result = await deleteClient(showClientModal);
-                            if (!result.success) {
-                                setError(result.error || "Error eliminant client");
-                                return;
-                            }
-                            setClients(clients.filter(c => c.id !== showClientModal));
-                            if (formData.client_id === showClientModal) {
-                                setFormData({ ...formData, client_id: "" });
-                            }
-                            setShowClientModal("");
+                      if (
+                        !confirm("Estàs segur que vols eliminar aquest client?")
+                      )
+                        return;
+                      setLoading(true);
+                      try {
+                        const result = await deleteClient(showClientModal);
+                        if (!result.success) {
+                          setError(result.error || "Error eliminant client");
+                          return;
                         }
-                        catch {
-                            setError("Error inesperat");
+                        setClients(
+                          clients.filter((c) => c.id !== showClientModal),
+                        );
+                        if (formData.client_id === showClientModal) {
+                          setFormData({ ...formData, client_id: "" });
                         }
-                        finally {
-                            setLoading(false);
-                        }
+                        setShowClientModal("");
+                      } catch {
+                        setError("Error inesperat");
+                      } finally {
+                        setLoading(false);
+                      }
                     }}
                   >
                     Eliminar
@@ -1093,8 +1097,8 @@ export default function InvoiceEditor({
                   {loading
                     ? "Guardant..."
                     : showClientModal === "new"
-                    ? "Crear Client"
-                    : "Actualitzar Client"}
+                      ? "Crear Client"
+                      : "Actualitzar Client"}
                 </button>
               </div>
             </form>
