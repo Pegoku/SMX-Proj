@@ -84,6 +84,12 @@ export default function AdminLayout({
         >
           Serveis
         </Link>
+        <Link 
+          href="/admin/invoices" 
+          className="text-gray-600 hover:text-orange-600 text-sm whitespace-nowrap"
+        >
+          Factures
+        </Link>
       </nav>
 
       {/* Content */}
