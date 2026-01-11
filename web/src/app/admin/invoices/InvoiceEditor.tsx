@@ -12,6 +12,7 @@ import {
   createInvoiceProduct,
   getInvoiceById,
   getInvoiceItemsById,
+  getAllInvoices,
 } from './actions';
 
 interface InvoiceEditorProps {
@@ -117,6 +118,7 @@ export default function InvoiceEditor({
         unit_price: Number(item.unit_price),
       })) || [],
     });
+    // console.log(formData)
   };
 
   const handleCreate = () => {
@@ -211,6 +213,7 @@ export default function InvoiceEditor({
       setError('Error inesperat');
     } finally {
       setLoading(false);
+      setInvoices(await getAllInvoices());
     }
   };
 
@@ -396,7 +399,7 @@ export default function InvoiceEditor({
                   <input
                     type="date"
                     value={formData.issue_date}
-                    onChange={e => setFormData({ ...formData, issue_date: e.target.value })}
+                    onChange={e => { setFormData({ ...formData, issue_date: e.target.value })}}
                     className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
                     required
                   />

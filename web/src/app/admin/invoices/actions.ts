@@ -401,12 +401,11 @@ export async function updateInvoice(
         `;
       }
     }
-    
     await sql`
       UPDATE invoices SET
         client_id = COALESCE(${data.client_id ?? null}, client_id),
         issue_date = COALESCE(${data.issue_date ?? null}, issue_date),
-        due_date = COALESCE(${data.due_date ?? null}, due_date),
+        due_date = ${data.due_date || null},
         status = COALESCE(${data.status ?? null}, status),
         notes = COALESCE(${data.notes ?? null}, notes),
         tax_rate = ${taxRate},
