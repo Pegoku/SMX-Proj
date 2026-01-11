@@ -76,9 +76,9 @@ export async function updateClient(
     postal_code?: string;
     notes?: string;
   }
-): Promise<{ success: boolean; error?: string }> {
+): Promise<{ success: boolean; error?: string; client?: Client }> {
   try {
-    await sql`
+    const result = await sql`
       UPDATE clients SET
         name = COALESCE(${data.name ?? null}, name),
         nif = COALESCE(${data.nif ?? null}, nif),
@@ -91,9 +91,10 @@ export async function updateClient(
         notes = COALESCE(${data.notes ?? null}, notes),
         updated_at = NOW()
       WHERE id = ${id}
+      RETURNING id, name, nif, email, phone, address_line1, address_line2, city, postal_code, notes, created_at, updated_at
     `;
     revalidatePath('/admin/invoices');
-    return { success: true };
+    return { success: true, client: result[0] as unknown as Client };
   } catch (error) {
     console.error('Failed to update client:', error);
     return { success: false, error: 'Error actualitzant el client' };

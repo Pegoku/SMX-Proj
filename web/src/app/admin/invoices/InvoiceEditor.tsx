@@ -13,6 +13,7 @@ import {
   getInvoiceById,
   getInvoiceItemsById,
   getAllInvoices,
+  updateClient,
 } from './actions';
 
 interface InvoiceEditorProps {
@@ -50,7 +51,7 @@ export default function InvoiceEditor({
   const [isCreating, setIsCreating] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [showClientModal, setShowClientModal] = useState(false);
+  const [showClientModal, setShowClientModal] = useState('');
   const [showProductModal, setShowProductModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter();
@@ -277,7 +278,38 @@ export default function InvoiceEditor({
         city: '',
         postal_code: '',
       });
-      setShowClientModal(false);
+      setShowClientModal('');
+    } catch {
+      setError('Error inesperat');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdateClient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const result = await updateClient(showClientModal, newClientForm);
+      if (!result.success) {
+        setError(result.error || 'Error creant client');
+        return;
+      }
+      if (result.client) {
+        setClients([...clients, result.client]);
+        setFormData({ ...formData, client_id: result.client.id });
+      }
+      setNewClientForm({
+        name: '',
+        nif: '',
+        email: '',
+        phone: '',
+        address_line1: '',
+        city: '',
+        postal_code: '',
+      });
+      setShowClientModal('');
     } catch {
       setError('Error inesperat');
     } finally {
@@ -310,6 +342,14 @@ export default function InvoiceEditor({
       setError('Error inesperat');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getClientData = (showClientModal: string, data: string) => {
+    if (showClientModal === 'new') {
+        return (newClientForm as any)[data];
+    } else {
+        return (clients.find(c => c.id === showClientModal) as any)[data] || '';
     }
   };
 
@@ -374,10 +414,10 @@ export default function InvoiceEditor({
                   </select>
                   <button
                     type="button"
-                    onClick={() => setShowClientModal(true)}
+                    onClick={() => setShowClientModal(formData.client_id ? formData.client_id : 'new')}
                     className="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                   >
-                    + Nou
+                    {formData.client_id ? 'Editar' : '+ Nou'}
                   </button>
                 </div>
                 {selectedClient && (
@@ -737,17 +777,17 @@ export default function InvoiceEditor({
         </div>
       )}
 
-      {/* New Client Modal */}
+      {/* Client Modal */}
       {showClientModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
             <h3 className="text-lg font-semibold mb-4">Nou Client</h3>
-            <form onSubmit={handleCreateClient} className="space-y-4">
+            <form onSubmit={showClientModal === 'new' ? handleCreateClient : handleUpdateClient} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nom *</label>
                 <input
                   type="text"
-                  value={newClientForm.name}
+                  value={getClientData(showClientModal, 'name')}
                   onChange={e => setNewClientForm({ ...newClientForm, name: e.target.value })}
                   className="w-full p-2 border rounded-lg"
                   required
@@ -758,7 +798,7 @@ export default function InvoiceEditor({
                   <label className="block text-sm font-medium text-gray-700 mb-1">N.I.F.</label>
                   <input
                     type="text"
-                    value={newClientForm.nif}
+                    value={getClientData(showClientModal, 'nif')}
                     onChange={e => setNewClientForm({ ...newClientForm, nif: e.target.value })}
                     className="w-full p-2 border rounded-lg"
                   />
@@ -767,7 +807,7 @@ export default function InvoiceEditor({
                   <label className="block text-sm font-medium text-gray-700 mb-1">Telèfon</label>
                   <input
                     type="text"
-                    value={newClientForm.phone}
+                    value={getClientData(showClientModal, 'phone')}
                     onChange={e => setNewClientForm({ ...newClientForm, phone: e.target.value })}
                     className="w-full p-2 border rounded-lg"
                   />
@@ -777,7 +817,7 @@ export default function InvoiceEditor({
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                 <input
                   type="email"
-                  value={newClientForm.email}
+                  value={getClientData(showClientModal, 'email')}
                   onChange={e => setNewClientForm({ ...newClientForm, email: e.target.value })}
                   className="w-full p-2 border rounded-lg"
                 />
@@ -786,7 +826,7 @@ export default function InvoiceEditor({
                 <label className="block text-sm font-medium text-gray-700 mb-1">Domicili</label>
                 <input
                   type="text"
-                  value={newClientForm.address_line1}
+                  value={getClientData(showClientModal, 'address_line1')}
                   onChange={e =>
                     setNewClientForm({ ...newClientForm, address_line1: e.target.value })
                   }
@@ -798,7 +838,7 @@ export default function InvoiceEditor({
                   <label className="block text-sm font-medium text-gray-700 mb-1">Codi Postal</label>
                   <input
                     type="text"
-                    value={newClientForm.postal_code}
+                    value={getClientData(showClientModal, 'postal_code')}
                     onChange={e =>
                       setNewClientForm({ ...newClientForm, postal_code: e.target.value })
                     }
@@ -809,7 +849,7 @@ export default function InvoiceEditor({
                   <label className="block text-sm font-medium text-gray-700 mb-1">Població</label>
                   <input
                     type="text"
-                    value={newClientForm.city}
+                    value={getClientData(showClientModal, 'city')}
                     onChange={e => setNewClientForm({ ...newClientForm, city: e.target.value })}
                     className="w-full p-2 border rounded-lg"
                   />
@@ -818,7 +858,7 @@ export default function InvoiceEditor({
               <div className="flex justify-end gap-3 pt-4">
                 <button
                   type="button"
-                  onClick={() => setShowClientModal(false)}
+                  onClick={() => setShowClientModal('')}
                   className="px-4 py-2 border rounded-lg hover:bg-gray-50"
                 >
                   Cancel·lar
@@ -828,7 +868,7 @@ export default function InvoiceEditor({
                   disabled={loading}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                 >
-                  {loading ? 'Guardant...' : 'Crear Client'}
+                  {loading ? 'Guardant...' : showClientModal === 'new' ? 'Crear Client' : 'Actualitzar Client'}
                 </button>
               </div>
             </form>
