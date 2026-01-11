@@ -244,26 +244,27 @@ export async function getAllInvoices(): Promise<Invoice[]> {
 export async function getInvoiceById(id: string): Promise<Invoice | null> {
   try {
     const invoices = await sql`
-      SELECT 
+      select 
         i.id, i.client_id, i.project_id, i.number, i.issue_date, i.due_date, 
         i.status, i.subtotal, i.tax_rate, i.tax_amount, i.total, i.notes, i.labor_total,
         i.created_at, i.updated_at,
         c.name as client_name, c.nif as client_nif, c.email as client_email, 
         c.phone as client_phone, c.address_line1 as client_address, c.city as client_city,
         c.postal_code as client_postal_code, c.address_line2 as client_address2
-      FROM invoices i
-      LEFT JOIN clients c ON i.client_id = c.id
-      WHERE i.id = ${id}
+      from invoices i
+      left join clients c on i.client_id = c.id
+      where i.id = ${id}
     `;
     
     if (invoices.length === 0) return null;
     
     const items = await sql`
-      SELECT id, invoice_id, service_id, description, quantity, unit, unit_price, line_total
-      FROM invoice_items
-      WHERE invoice_id = ${id}
-      ORDER BY id ASC
+      select id, invoice_id, service_id, description, quantity, unit, unit_price, line_total
+      from invoice_items
+      where invoice_id = ${id}
+      order by id asc
     `;
+    // console.log('fetched items for invoice', items, id);
     
     const inv = invoices[0];
     return {
@@ -282,9 +283,24 @@ export async function getInvoiceById(id: string): Promise<Invoice | null> {
       items: items as unknown as InvoiceItem[],
     } as unknown as Invoice;
   } catch (error) {
-    console.error('Failed to fetch invoice:', error);
+    console.error('failed to fetch invoice:', error);
     return null;
   }
+}
+
+export async function getInvoiceItemsById(id: string): Promise<InvoiceItem[]> {
+    try{
+        const items = await sql`
+        select id, invoice_id, service_id, description, quantity, unit, unit_price, line_total
+        from invoice_items
+        where invoice_id = ${id}
+        order by id asc
+      `;
+      return items as unknown as InvoiceItem[];
+    } catch (error) {
+        console.error('failed to fetch invoice items:', error);
+        return [];
+    }
 }
 
 export async function createInvoice(data: {

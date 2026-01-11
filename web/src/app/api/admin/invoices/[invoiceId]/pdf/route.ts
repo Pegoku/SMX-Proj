@@ -95,7 +95,7 @@ export async function GET(
     // Main logo
     const logoBase64 = getLogoBase64();
     if (logoBase64) {
-      doc.addImage(logoBase64, 'PNG', margin, y, 30, 30);
+      doc.addImage(logoBase64, 'PNG', margin + 4, y, 24, 35);
     }
 
     // Business name (large, green)

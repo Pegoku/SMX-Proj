@@ -10,6 +10,8 @@ import {
   updateInvoiceStatus,
   createClient,
   createInvoiceProduct,
+  getInvoiceById,
+  getInvoiceItemsById,
 } from './actions';
 
 interface InvoiceEditorProps {
@@ -97,7 +99,7 @@ export default function InvoiceEditor({
     setError('');
   }, []);
 
-  const handleEdit = (invoice: Invoice) => {
+  const handleEdit = async (invoice: Invoice) => {
     setEditingInvoice(invoice);
     setIsCreating(false);
     setFormData({
@@ -108,11 +110,11 @@ export default function InvoiceEditor({
       notes: invoice.notes || '',
       tax_rate: invoice.tax_rate || 21,
       labor_total: invoice.labor_total || 0,
-      items: invoice.items?.map(item => ({
+      items: (await getInvoiceItemsById(invoice.id)).map(item => ({
         description: item.description,
-        quantity: item.quantity,
+        quantity: Number(item.quantity),
         unit: item.unit || 'unitat',
-        unit_price: item.unit_price,
+        unit_price: Number(item.unit_price),
       })) || [],
     });
   };
@@ -156,19 +158,19 @@ export default function InvoiceEditor({
     });
   };
 
-  const calculateSubtotal = () => {
+  const calculateSubtotal = (): number => {
     const itemsTotal = formData.items.reduce(
-      (sum, item) => sum + item.quantity * item.unit_price,
+      (sum, item) => sum + Number(item.quantity) * Number(item.unit_price),
       0
     );
-    return itemsTotal + (formData.labor_total || 0);
+    return itemsTotal + Number(formData.labor_total || 0);
   };
 
-  const calculateTax = () => {
+  const calculateTax = (): number => {
     return calculateSubtotal() * (formData.tax_rate / 100);
   };
 
-  const calculateTotal = () => {
+  const calculateTotal = (): number => {
     return calculateSubtotal() + calculateTax();
   };
 
@@ -692,6 +694,7 @@ export default function InvoiceEditor({
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex justify-center gap-2">
+                        {/* {console.log(invoice)} */}
                         <button
                           onClick={() => handleEdit(invoice)}
                           className="px-2 py-1 text-sm text-blue-600 hover:bg-blue-50 rounded"
