@@ -249,6 +249,7 @@ export default function InvoiceEditor({
         setError(result.error || 'Error actualitzant estat');
         return;
       }
+      setInvoices(await getAllInvoices());
       router.refresh();
     } catch {
       setError('Error inesperat');
