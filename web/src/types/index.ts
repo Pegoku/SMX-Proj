@@ -76,3 +76,62 @@ export interface EmailQueueItem {
   attempts: number;
   created_at: Date;
 }
+
+export interface Client {
+  id: string;
+  name: string;
+  nif?: string;
+  email?: string;
+  phone?: string;
+  address_line1?: string;
+  address_line2?: string;
+  city?: string;
+  postal_code?: string;
+  notes?: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+export interface Invoice {
+  id: string;
+  client_id: string;
+  project_id?: string;
+  number: string;
+  issue_date: string;
+  due_date?: string;
+  status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+  subtotal: number;
+  tax_rate: number;
+  tax_amount: number;
+  total: number;
+  notes?: string;
+  labor_total?: number;
+  created_at: Date;
+  updated_at: Date;
+  // Joined fields
+  client?: Client;
+  items?: InvoiceItem[];
+}
+
+export interface InvoiceItem {
+  id: string;
+  invoice_id: string;
+  service_id?: string;
+  description: string;
+  quantity: number;
+  unit: string;
+  unit_price: number;
+  line_total: number;
+}
+
+export interface InvoiceProduct {
+  id: string;
+  name: string;
+  description?: string;
+  default_price: number;
+  default_unit: string;
+  category?: string;
+  is_active: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
