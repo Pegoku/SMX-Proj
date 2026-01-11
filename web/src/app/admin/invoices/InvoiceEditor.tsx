@@ -36,7 +36,7 @@ const units = ["unitat", "hora", "m²", "m", "kg", "litre", "pack"];
 const statusLabels: Record<string, { label: string; color: string }> = {
   draft: { label: "Esborrany", color: "bg-gray-100 text-gray-800" },
   sent: { label: "Enviada", color: "bg-blue-100 text-blue-800" },
-  paid: { label: "Pagada", color: "bg-green-100 text-green-800" },
+  paid: { label: "Pagada", color: "bg-orange-100 text-orange-800" },
   overdue: { label: "Vençuda", color: "bg-red-100 text-red-800" },
   cancelled: { label: "Cancel·lada", color: "bg-gray-100 text-gray-500" },
 };
@@ -375,11 +375,11 @@ export default function InvoiceEditor({
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Factures</h1>
+        {/* <h1 className="text-2xl font-bold text-gray-800">Factures</h1> */}
         {!isCreating && !editingInvoice && (
           <button
             onClick={handleCreate}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+            className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700"
           >
             + Nova Factura
           </button>
@@ -422,7 +422,7 @@ export default function InvoiceEditor({
                     onChange={(e) =>
                       setFormData({ ...formData, client_id: e.target.value })
                     }
-                    className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                    className="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
                     required
                   >
                     <option value="">Selecciona un client...</option>
@@ -499,7 +499,7 @@ export default function InvoiceEditor({
                     onChange={(e) => {
                       setFormData({ ...formData, issue_date: e.target.value });
                     }}
-                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
                     required
                   />
                 </div>
@@ -512,7 +512,7 @@ export default function InvoiceEditor({
                     onChange={(e) =>
                       setFormData({ ...formData, status: e.target.value })
                     }
-                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                    className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
                   >
                     {Object.entries(statusLabels).map(([value, { label }]) => (
                       <option key={value} value={value}>
@@ -541,7 +541,7 @@ export default function InvoiceEditor({
                   <button
                     type="button"
                     onClick={addItem}
-                    className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+                    className="px-3 py-1 text-sm bg-orange-600 text-white rounded hover:bg-orange-700"
                   >
                     + Afegir Línia
                   </button>
@@ -604,7 +604,7 @@ export default function InvoiceEditor({
                             onChange={(e) =>
                               updateItem(index, "description", e.target.value)
                             }
-                            className="w-full p-1 border rounded focus:ring-1 focus:ring-green-500"
+                            className="w-full p-1 border rounded focus:ring-1 focus:ring-orange-500"
                             placeholder="Descripció..."
                           />
                         </td>
@@ -614,7 +614,7 @@ export default function InvoiceEditor({
                             onChange={(e) =>
                               updateItem(index, "unit", e.target.value)
                             }
-                            className="w-full p-1 border rounded focus:ring-1 focus:ring-green-500 text-sm"
+                            className="w-full p-1 border rounded focus:ring-1 focus:ring-orange-500 text-sm"
                           >
                             {units.map((u) => (
                               <option key={u} value={u}>
@@ -634,7 +634,7 @@ export default function InvoiceEditor({
                                 parseFloat(e.target.value) || 0,
                               )
                             }
-                            className="w-full p-1 border rounded focus:ring-1 focus:ring-green-500 text-center"
+                            className="w-full p-1 border rounded focus:ring-1 focus:ring-orange-500 text-center"
                             step="0.01"
                             min="0"
                           />
@@ -650,7 +650,7 @@ export default function InvoiceEditor({
                                 parseFloat(e.target.value) || 0,
                               )
                             }
-                            className="w-full p-1 border rounded focus:ring-1 focus:ring-green-500 text-right"
+                            className="w-full p-1 border rounded focus:ring-1 focus:ring-orange-500 text-right"
                             step="0.01"
                             min="0"
                           />
@@ -699,7 +699,7 @@ export default function InvoiceEditor({
                       labor_total: parseFloat(e.target.value) || 0,
                     })
                   }
-                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                  className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
                   step="0.01"
                   min="0"
                 />
@@ -736,7 +736,7 @@ export default function InvoiceEditor({
                 </div>
                 <div className="flex justify-between pt-2 border-t border-gray-300">
                   <span className="font-semibold text-lg">Total:</span>
-                  <span className="font-bold text-lg text-green-700">
+                  <span className="font-bold text-lg text-orange-700">
                     {calculateTotal().toFixed(2)}€
                   </span>
                 </div>
@@ -753,7 +753,7 @@ export default function InvoiceEditor({
                 onChange={(e) =>
                   setFormData({ ...formData, notes: e.target.value })
                 }
-                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+                className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
                 rows={3}
               />
             </div>
@@ -769,7 +769,7 @@ export default function InvoiceEditor({
               <button
                 type="submit"
                 disabled={loading}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+                className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:opacity-50"
               >
                 {loading
                   ? "Guardant..."
@@ -791,7 +791,7 @@ export default function InvoiceEditor({
               placeholder="Cercar per número o client..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full md:w-80 p-2 border rounded-lg focus:ring-2 focus:ring-green-500"
+              className="w-full md:w-80 p-2 border rounded-lg focus:ring-2 focus:ring-orange-500"
             />
           </div>
 
@@ -887,7 +887,7 @@ export default function InvoiceEditor({
                           href={`/api/admin/invoices/${invoice.id}/pdf`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="px-2 py-1 text-sm text-green-600 hover:bg-green-50 rounded"
+                          className="px-2 py-1 text-sm text-orange-600 hover:bg-orange-50 rounded"
                         >
                           PDF
                         </a>
