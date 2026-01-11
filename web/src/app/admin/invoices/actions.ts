@@ -487,7 +487,10 @@ export async function sendInvoiceEmail(
       revalidatePath("/admin/invoices");
     }
 
-    return result;
+    return {
+      success: result.success,
+      error: result.error ? String(result.error) : undefined,
+    };
   } catch (error) {
     console.error("Failed to send invoice email:", error);
     return { success: false, error: "Error enviant la factura per email" };
