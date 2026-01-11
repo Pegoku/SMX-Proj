@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import Image from 'next/image';
+import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -11,21 +11,23 @@ export default function Footer() {
           {/* Company Info */}
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
-              <Image 
-                src="/logo-color.png" 
-                alt="Miquel A. Riudavets" 
-                width={40} 
+              <Image
+                src="/logo-color.png"
+                alt="Miquel A. Riudavets"
+                width={40}
                 height={67}
                 className="h-12 w-auto"
               />
               <div>
-                <h3 className="text-base font-semibold">Miquel A. Riudavets Mercadal</h3>
+                <h3 className="text-base font-semibold">
+                  Miquel A. Riudavets Mercadal
+                </h3>
                 <p className="text-gray-400 text-sm">Pintura i Reformes</p>
               </div>
             </div>
             <p className="text-gray-400 text-sm mb-4 max-w-md">
-              Arreglos de Carpinteria, Pintado y Barnizado en General 
-              (Paredes Interiores, Exteriores y Carpinteria)
+              Arreglos de Carpinteria, Pintado y Barnizado en General (Paredes
+              Interiores, Exteriores y Carpinteria)
             </p>
             <p className="text-gray-500 text-xs">NIF: 41 497 721 V</p>
           </div>
@@ -35,22 +37,34 @@ export default function Footer() {
             <h4 className="text-sm font-semibold mb-4">Enllaços</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Inici
                 </Link>
               </li>
               <li>
-                <Link href="/serveis" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/serveis"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Serveis
                 </Link>
               </li>
               <li>
-                <Link href="/portfolio" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/portfolio"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Treballs
                 </Link>
               </li>
               <li>
-                <Link href="/materials" className="text-gray-400 hover:text-white transition-colors">
+                <Link
+                  href="/materials"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   Materials
                 </Link>
               </li>
@@ -62,13 +76,21 @@ export default function Footer() {
             <h4 className="text-sm font-semibold mb-4">Contacte</h4>
             <ul className="space-y-2 text-sm">
               <li className="text-gray-400">
-                Caseriu Trebaluger, 26
-              </li>
-              <li className="text-gray-400">
-                07720 Es Castell, Menorca
+                <a
+                  href="https://maps.app.goo.gl/Jn9iE4nedVVV78bD7"
+                  target="_blank"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Caseriu Trebaluger, 26
+                  <br />
+                  07720 Es Castell, Menorca
+                </a>
               </li>
               <li>
-                <a href="tel:+34656921314" className="text-gray-400 hover:text-white transition-colors">
+                <a
+                  href="tel:+34656921314"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
                   656 92 13 14
                 </a>
               </li>
@@ -79,7 +101,8 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-gray-700 mt-8 pt-6 text-center">
           <p className="text-gray-500 text-xs">
-            © {currentYear} Miquel A. Riudavets Mercadal. Tots els drets reservats.
+            © {currentYear} Miquel A. Riudavets Mercadal. Tots els drets
+            reservats.
           </p>
         </div>
       </div>
