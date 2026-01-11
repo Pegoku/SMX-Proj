@@ -297,7 +297,7 @@ export default function InvoiceEditor({
         return;
       }
       if (result.client) {
-        setClients([...clients, result.client]);
+        setClients([...clients.filter(c => c.id !== result.client!.id), result.client]);
         setFormData({ ...formData, client_id: result.client.id });
       }
       setNewClientForm({
